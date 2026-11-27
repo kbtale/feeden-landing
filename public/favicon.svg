@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="12" fill="#080C12"/>
+  <circle cx="32" cy="32" r="20" stroke="#9CFF2E" stroke-width="3.5"/>
+  <path d="M5 24L22 28L18 36L5 24Z" fill="#080C12" stroke="#9CFF2E" stroke-width="2.2" stroke-linejoin="round"/>
+  <path d="M59 24L42 28L46 36L59 24Z" fill="#080C12" stroke="#9CFF2E" stroke-width="2.2" stroke-linejoin="round"/>
+  <circle cx="32" cy="34" r="14" fill="#080C12"/>
+  <path d="M21 29C25 30 28 32 30 35C25 36 22 34 21 29Z" fill="#9CFF2E"/>
+  <path d="M43 29C39 30 36 32 34 35C39 36 42 34 43 29Z" fill="#9CFF2E"/>
+  <text x="32" y="48" text-anchor="middle" font-family="sans-serif" font-weight="800" font-size="11" letter-spacing="0.06em" fill="#9CFF2E">FDN</text>
+</svg>
