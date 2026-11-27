@@ -140,7 +140,7 @@
   background-color: var(--color-obsidian);
   border-bottom-left-radius: 36px;
   border-bottom-right-radius: 36px;
-  overflow-x: clip;
+  overflow: clip;
 }
 
 .fdn-rails {
@@ -390,6 +390,7 @@
   inset: 0;
   margin: auto;
   width: min(560px, calc(100vw - 32px));
+  height: fit-content;
   max-height: min(86dvh, 720px);
   overflow-y: auto;
   overscroll-behavior: contain;
