@@ -7,8 +7,12 @@
     ToastRegion,
     ToastTitle,
   } from "@ui-sdk/svelte/toast";
+  import ClosingCta from "./lib/components/ClosingCta.svelte";
+  import CommunityHub from "./lib/components/CommunityHub.svelte";
+  import Footer from "./lib/components/Footer.svelte";
   import Hero from "./lib/components/Hero.svelte";
   import Navbar from "./lib/components/Navbar.svelte";
+  import StreamPillars from "./lib/components/StreamPillars.svelte";
   import StreamStage from "./lib/components/StreamStage.svelte";
   import { KICK_URL } from "./lib/data/feeden";
   import { createI18nStore, setI18n } from "./lib/i18n/store.svelte";
@@ -67,21 +71,27 @@
       i18n.t.hero.copiedDescription,
     );
   }
+
+  function handleCopyTemplate(template: string) {
+    void copyText(template, i18n.t.community.dialog.copiedTemplate);
+  }
 </script>
 
 <a class="skip-link" href="#contenido-principal">{i18n.t.a11y.skipToContent}</a>
 
 <Navbar {status} {checking} />
 
-<div class="fdn-sheet fdn-rails min-h-[100svh]">
+<div class="fdn-sheet fdn-rails">
   <main id="contenido-principal">
     <Hero {status} {checking} onCopyChannel={handleCopyChannel} />
     <StreamStage {status} onCopyChannel={handleCopyChannel} />
-    <div id="stream" class="sr-only"></div>
-    <div id="comunidad" class="sr-only"></div>
-    <div id="redes" class="sr-only"></div>
+    <StreamPillars />
+    <CommunityHub onCopyTemplate={handleCopyTemplate} />
+    <ClosingCta />
   </main>
 </div>
+
+<Footer />
 
 <ToastRegion {toaster} aria-label={i18n.t.a11y.toastRegion}>
   <Toast>
