@@ -360,6 +360,49 @@
   display: none;
 }
 
+.fdn-navbar[data-top="true"] {
+  background-color: transparent;
+}
+
+.fdn-navbar[data-top="false"] {
+  background-color: var(--color-obsidian);
+}
+
+.fdn-nav-rule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background-color: color-mix(in oklab, var(--color-off-white) 12%, transparent);
+  transform-origin: left center;
+  animation: nav-rule var(--dur-draw) var(--ease-fdn) both;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .fdn-nav-link:hover {
+    color: var(--color-fdn-lime);
+  }
+
+  .fdn-community-row:hover {
+    background-color: rgba(250, 252, 249, 0.04);
+  }
+
+  .fdn-community-row:hover .fdn-community-cta {
+    color: var(--color-off-white);
+  }
+
+  .fdn-paper-row:hover {
+    background-color: rgba(13, 17, 20, 0.04);
+  }
+}
+
+@media (max-width: 879px) {
+  .fdn-footer {
+    padding-bottom: max(0px, calc(100lvh - 100svh));
+  }
+}
+
 @keyframes nav-rule {
   from {
     transform: scaleX(0);
