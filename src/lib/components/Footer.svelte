@@ -27,28 +27,13 @@
   ></canvas>
 
   <div class="relative z-10 fdn-container pt-12 pb-[calc(28px+env(safe-area-inset-bottom,0px))] stack:pt-16 stack:pb-12">
-    <div aria-hidden="true">
-      <svg
-        viewBox="0 0 1200 215"
-        class="mx-auto block h-auto w-full max-w-[1406px] text-obsidian"
-        fill="currentColor"
-        role="presentation"
-      >
-        <text
-          x="600"
-          y="182"
-          text-anchor="middle"
-          font-family="'Space Grotesk', system-ui, sans-serif"
-          font-weight="700"
-          font-size="225"
-          letter-spacing="-6"
-          textLength="1184"
-          lengthAdjust="spacingAndGlyphs"
-        >
-          feeden
-        </text>
-      </svg>
-    </div>
+    <p
+      aria-hidden="true"
+      class="mx-auto text-center font-display text-[clamp(76px,18.5vw,272px)] leading-[0.86] font-bold tracking-[-0.045em] text-obsidian select-none"
+      translate="no"
+    >
+      feeden
+    </p>
 
     <div class="mt-8 flex flex-col items-center justify-center gap-4 text-center font-mono text-[13px] text-obsidian/75 stack:mt-11">
       <div class="flex flex-col items-center justify-center gap-1.5 panel:flex-row panel:flex-wrap panel:gap-x-3">

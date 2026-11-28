@@ -47,6 +47,7 @@ export interface Translations {
     logoAlt: string;
     copiedLink: string;
     copiedDescription: string;
+    loaderLabel: string;
   };
   morphStage: {
     eyebrow: string;
@@ -57,16 +58,15 @@ export interface Translations {
     modeFdn: string;
     tabs: {
       all: string;
+      challenges: string;
       gaming: string;
-      futbol: string;
-      chat: string;
+      reactions: string;
     };
     totalLabelLive: string;
     totalLabelOffline: string;
     offlineValue: string;
     lineItemsSuffix: string;
-    morphCaptionStreamer: string;
-    morphCaptionFdn: string;
+    viewChannel: string;
     copyLink: string;
   };
   splitSlab: {
@@ -108,6 +108,7 @@ export interface Translations {
       id: string;
       title: string;
       description: string;
+      cta: string;
     }[];
   };
   community: {
@@ -163,7 +164,7 @@ export const translations: Record<Locale, Translations> = {
     meta: {
       title: "Feeden (FDN) | Streams en vivo en Kick",
       description:
-        "Landing oficial de Feeden (FDN). Streams en vivo en Kick: gaming, reacciones, debates de futbol, Just Chatting y cuentas de la comunidad.",
+        "Landing oficial de Feeden (FDN). Streams en vivo en Kick: Just Chatting, reacciones, desafios y videojuegos como Fortnite, Clash of Clans y GTA VI.",
     },
     a11y: {
       skipToContent: "Ir al contenido principal",
@@ -174,7 +175,7 @@ export const translations: Record<Locale, Translations> = {
       mobileNavTitle: "Feeden",
       mobileNavDescription: "Navegacion principal del sitio de Feeden.",
       officialSocials: "Redes oficiales de Feeden",
-      streamDeskTabs: "Categorias de la rotacion del stream",
+      streamDeskTabs: "Categorias de videos de YouTube de Feeden",
       communityFilterTabs: "Filtrar cuentas de la comunidad por plataforma",
       splitModeSwitcher: "Elegir vista de stream en vivo o comunidad",
       morphModeSwitcher: "Alternar modo del modelo 3D entre Feeden y Yoda FDN",
@@ -201,35 +202,35 @@ export const translations: Record<Locale, Translations> = {
     hero: {
       headline: "Prendé el stream, sumate a la FDN.",
       standfirst:
-        "Gaming en vivo, reacciones, debates de futbol y Just Chatting sin filtro desde Argentina. Todo el vivo en Kick y las cuentas de la comunidad en un solo lugar.",
+        "Just Chatting, reacciones, desafios y videojuegos como Fortnite, Clash of Clans y GTA VI desde Argentina. Todo el vivo en Kick y las cuentas de la comunidad en un solo lugar.",
       primaryCta: "Ver en Kick",
       liveLinePrefix: "Ahora en Kick",
       scrollHint: "Scrolleá para activar modo FDN",
       logoAlt: "Emblema oficial de Feeden FDN",
       copiedLink: "Link copiado",
       copiedDescription: "kick.com/feeden listo para compartir.",
+      loaderLabel: "FDN // INICIANDO SENAL",
     },
     morphStage: {
-      eyebrow: "EN VIVO",
+      eyebrow: "YOUTUBE · @FEEDEN_",
       heading: "De Feeden a modo FDN.",
       subheading:
-        "Cada vivo mezcla partidas competitivas, reacciones y charlas con toda la comunidad.",
-      cardHeader: "ROTACION",
+        "No hay guion fijo: los mejores desafios, reacciones y partidas del stream quedan subidos al canal de YouTube.",
+      cardHeader: "ULTIMOS VIDEOS",
       modeStreamer: "Feeden",
       modeFdn: "Modo FDN",
       tabs: {
         all: "Todo",
+        challenges: "Retos",
         gaming: "Gaming",
-        futbol: "Futbol",
-        chat: "Chat",
+        reactions: "Chat",
       },
       totalLabelLive: "AUDIENCIA EN KICK",
-      totalLabelOffline: "CANAL OFICIAL",
-      offlineValue: "kick.com/feeden",
-      lineItemsSuffix: "bloques en rotacion",
-      morphCaptionStreamer: "Modo streamer · Scrollea o activa Modo FDN",
-      morphCaptionFdn: "Modo Yoda FDN activo · Rotacion completa",
-      copyLink: "Copiar link",
+      totalLabelOffline: "CANAL DE YOUTUBE",
+      offlineValue: "@Feeden_",
+      lineItemsSuffix: "videos recientes",
+      viewChannel: "Ver canal",
+      copyLink: "Copiar Kick",
     },
     splitSlab: {
       eyebrow: "EL STREAM",
@@ -249,11 +250,11 @@ export const translations: Record<Locale, Translations> = {
         },
         {
           id: "rotation",
-          title: "Gaming, futbol y reacciones",
+          title: "Reacciones, desafios y gaming",
           points: [
-            "Partidas de Fortnite, Fall Guys, Counter-Strike, Clash Royale y Roblox",
-            "Debates futboleros y reacciones a partidos con el chat",
-            "Just Chatting largo sin guion ni filtro",
+            "Just Chatting largo, TikToks del chat y reacciones en tiempo real",
+            "Partidas de Fortnite, Clash of Clans y toda la previa de GTA VI",
+            "Retos de varios dias y dinamicas armadas con la comunidad",
           ],
         },
         {
@@ -262,7 +263,7 @@ export const translations: Record<Locale, Translations> = {
           points: [
             "Avisos instantaneos en el Discord oficial de la FDN",
             "Historias y previa diaria en @fedenrios",
-            "Resumenes y recortes apenas termina el vivo",
+            "Resumenes y videos completos en YouTube @Feeden_",
           ],
         },
       ],
@@ -272,8 +273,8 @@ export const translations: Record<Locale, Translations> = {
           title: "Discord oficial de la FDN",
           points: [
             "Alertas automaticas cada vez que Feeden prende en Kick",
-            "Canales de futbol, gaming, memes y salas de voz",
-            "Organizacion de torneos y salas privadas con suscriptores",
+            "Canales de gaming, reacciones, memes y salas de voz",
+            "Organizacion de retos y partidas privadas con la comunidad",
           ],
         },
         {
@@ -281,7 +282,7 @@ export const translations: Record<Locale, Translations> = {
           title: "Fanpages y cuentas de clips",
           points: [
             "Recortes diarios en Instagram y TikTok hechos por la comunidad",
-            "Archivo de debates futboleros y momentos historicos",
+            "Archivo de reacciones, retos y momentos historicos del stream",
             "Espacio abierto para sumar nuevas cuentas fan verificadas",
           ],
         },
@@ -290,7 +291,7 @@ export const translations: Record<Locale, Translations> = {
           title: "Codigos del chat",
           points: [
             "Buena onda siempre, cero spam ni links sospechosos",
-            "Los debates de futbol se pican con respeto",
+            "Mandá tus TikToks, ideas de retos y clips para reaccionar en vivo",
             "Los mejores momentos van directo al directorio de clips",
           ],
         },
@@ -298,7 +299,7 @@ export const translations: Record<Locale, Translations> = {
       communityCardEyebrow: "SERVIDOR OFICIAL",
       communityCardTitle: "Sumate al Discord de la FDN.",
       communityCardBody:
-        "Cuando se apaga el vivo la charla sigue en el servidor: avisos de stream, previas de partidos, salas de juegos y envio directo de clips.",
+        "Cuando se apaga el vivo la charla sigue en el servidor: avisos de stream, ideas de desafios, partidas con el chat y envio directo de clips.",
       communityCardCta: "Entrar al Discord",
       communityCardMeta: "discord.gg/jrHe634FU · Abierto a toda la comunidad",
     },
@@ -321,31 +322,36 @@ export const translations: Record<Locale, Translations> = {
           id: "gaming",
           title: "Gaming en vivo",
           description:
-            "Partidas competitivas y caoticas en Fortnite, Fall Guys, Counter-Strike, Clash Royale y Roblox jugando con el chat.",
+            "Partidas de Fortnite, aldeas de Clash of Clans y la ruta completa hacia GTA VI jugando en directo con el chat.",
+          cta: "Ver en Kick",
         },
         {
           id: "reactions",
-          title: "Reacciones y futbol",
+          title: "Reacciones y virales",
           description:
-            "Partidos, polemicas, videos virales y debates futboleros en directo con toda la comunidad opinando.",
+            "Trailers, TikToks bizarros que manda el chat y videos virales reaccionados sin filtro en cada transmision.",
+          cta: "Ver en YouTube",
         },
         {
           id: "just-chatting",
           title: "Just Chatting y humor",
           description:
             "Charlas largas, anecdotas y el ida y vuelta diario con la gente que banca el stream desde el principio.",
+          cta: "Ir al reproductor",
         },
         {
-          id: "events",
-          title: "Eventos y torneos FDN",
+          id: "challenges",
+          title: "Desafios y retos",
           description:
-            "Showmatches, cruces especiales, desafios contra otros creadores y noches tematicas armadas para la comunidad.",
+            "Retos de larga duracion como los 80 dias para conseguir la PS5 y GTA VI, apuestas en vivo y dinamicas con el chat.",
+          cta: "Ver en TikTok",
         },
         {
           id: "community-clips",
           title: "Comunidad 24/7",
           description:
             "Discord activo todo el dia y fanpages creadas por la gente que archivan los mejores recortes de cada vivo.",
+          cta: "Explorar comunidad",
         },
       ],
     },
@@ -397,7 +403,7 @@ export const translations: Record<Locale, Translations> = {
     closing: {
       heading: "Nos vemos en el próximo vivo.",
       cta: "Ver en Kick",
-      emblemAlt: "Emblema geometrico FDN",
+      emblemAlt: "Emblema oficial FDN",
     },
     footer: {
       rights: "Feeden (FDN). Comunidad oficial de streams en Kick.",
@@ -408,7 +414,7 @@ export const translations: Record<Locale, Translations> = {
     meta: {
       title: "Feeden (FDN) | Live Streams on Kick",
       description:
-        "Official landing page for Feeden (FDN). Live Kick streams covering gaming, reactions, football debates, Just Chatting, and community fanpages.",
+        "Official landing page for Feeden (FDN). Live Kick streams covering Just Chatting, reactions, challenges, and games like Fortnite, Clash of Clans, and GTA VI.",
     },
     a11y: {
       skipToContent: "Skip to main content",
@@ -419,7 +425,7 @@ export const translations: Record<Locale, Translations> = {
       mobileNavTitle: "Feeden",
       mobileNavDescription: "Primary navigation for Feeden.",
       officialSocials: "Feeden official social links",
-      streamDeskTabs: "Stream rotation categories",
+      streamDeskTabs: "Feeden YouTube video categories",
       communityFilterTabs: "Filter community accounts by platform",
       splitModeSwitcher: "Switch between live stream player and community view",
       morphModeSwitcher: "Toggle 3D model between Feeden streamer and FDN Yoda mode",
@@ -446,35 +452,35 @@ export const translations: Record<Locale, Translations> = {
     hero: {
       headline: "Tune in live, join the FDN.",
       standfirst:
-        "Live gaming, unfiltered reactions, football debates, and Just Chatting from Argentina. The live Kick stream and every community page in one place.",
+        "Unfiltered Just Chatting, live reactions, real-world challenges, and games like Fortnite, Clash of Clans, and GTA VI from Argentina. Everything live on Kick plus the community hub in one place.",
       primaryCta: "Watch on Kick",
       liveLinePrefix: "Live now on Kick",
       scrollHint: "Scroll to morph into FDN mode",
       logoAlt: "Feeden FDN official emblem",
       copiedLink: "Link copied",
       copiedDescription: "kick.com/feeden is ready to share.",
+      loaderLabel: "FDN // LOCKING SIGNAL",
     },
     morphStage: {
-      eyebrow: "ON AIR",
+      eyebrow: "YOUTUBE · @FEEDEN_",
       heading: "From Feeden to FDN mode.",
       subheading:
-        "Every stream mixes competitive lobbies, football debates, and live banter with chat.",
-      cardHeader: "ROTATION",
+        "No fixed script: the best challenges, live reactions, and gaming moments go straight to Feeden's YouTube channel.",
+      cardHeader: "LATEST VIDEOS",
       modeStreamer: "Feeden",
       modeFdn: "FDN Mode",
       tabs: {
         all: "All",
+        challenges: "Challenges",
         gaming: "Gaming",
-        futbol: "Football",
-        chat: "Chat",
+        reactions: "Chat",
       },
       totalLabelLive: "LIVE ON KICK",
-      totalLabelOffline: "OFFICIAL CHANNEL",
-      offlineValue: "kick.com/feeden",
-      lineItemsSuffix: "segments in rotation",
-      morphCaptionStreamer: "Streamer mode · Scroll or switch to FDN Mode",
-      morphCaptionFdn: "FDN Yoda mode active · Full rotation",
-      copyLink: "Copy link",
+      totalLabelOffline: "YOUTUBE CHANNEL",
+      offlineValue: "@Feeden_",
+      lineItemsSuffix: "recent uploads",
+      viewChannel: "Open channel",
+      copyLink: "Copy Kick",
     },
     splitSlab: {
       eyebrow: "THE STREAM",
@@ -494,11 +500,11 @@ export const translations: Record<Locale, Translations> = {
         },
         {
           id: "rotation",
-          title: "Gaming, football, and reactions",
+          title: "Reactions, challenges, and gaming",
           points: [
-            "Fortnite, Fall Guys, Counter-Strike, Clash Royale, and Roblox lobbies",
-            "Live football debates and match reactions with chat",
-            "Long unfiltered Just Chatting hangouts",
+            "Long unfiltered Just Chatting and chat-submitted TikTok reactions",
+            "Fortnite, Clash of Clans, and the road to GTA VI",
+            "Multi-day challenges and live dares shaped by the chat",
           ],
         },
         {
@@ -507,7 +513,7 @@ export const translations: Record<Locale, Translations> = {
           points: [
             "Instant live pings inside the official FDN Discord server",
             "Pre-stream stories and daily updates on @fedenrios",
-            "Edited recaps and clips right after the stream ends",
+            "Full edited uploads and recaps on YouTube @Feeden_",
           ],
         },
       ],
@@ -517,8 +523,8 @@ export const translations: Record<Locale, Translations> = {
           title: "Official FDN Discord",
           points: [
             "Automatic live notifications the moment Feeden goes on air",
-            "Dedicated football, gaming, meme, and voice channels",
-            "Community tournaments and subscriber custom lobbies",
+            "Dedicated gaming, reaction, meme, and voice channels",
+            "Community challenges and custom lobbies with chat",
           ],
         },
         {
@@ -526,7 +532,7 @@ export const translations: Record<Locale, Translations> = {
           title: "Fanpages & clip archives",
           points: [
             "Daily Instagram and TikTok cuts edited by the community",
-            "Archive of football debates and classic FDN moments",
+            "Archive of reactions, challenges, and classic FDN moments",
             "Open directory for verified community clip pages",
           ],
         },
@@ -535,7 +541,7 @@ export const translations: Record<Locale, Translations> = {
           title: "Chat basics",
           points: [
             "Good vibes only, zero spam or shady links",
-            "Football debates can get loud, always keep it respectful",
+            "Drop TikToks, challenge ideas, and clips for live reactions",
             "Top moments head straight into the fan clip pages",
           ],
         },
@@ -543,7 +549,7 @@ export const translations: Record<Locale, Translations> = {
       communityCardEyebrow: "OFFICIAL SERVER",
       communityCardTitle: "Join the FDN Discord.",
       communityCardBody:
-        "When the stream wraps, chat keeps going inside the server: live alerts, match watchalongs, custom lobbies, and clip submissions.",
+        "When the stream wraps, chat keeps going inside the server: live alerts, challenge ideas, custom lobbies, and clip submissions.",
       communityCardCta: "Join Discord",
       communityCardMeta: "discord.gg/jrHe634FU · Open to the whole community",
     },
@@ -566,31 +572,36 @@ export const translations: Record<Locale, Translations> = {
           id: "gaming",
           title: "Live gaming",
           description:
-            "Competitive and chaotic sessions across Fortnite, Fall Guys, Counter-Strike, Clash Royale, and Roblox with chat driving the pace.",
+            "Fortnite sessions, Clash of Clans raids, and the full road to GTA VI with chat driving every match.",
+          cta: "Watch on Kick",
         },
         {
           id: "reactions",
-          title: "Reactions & football",
+          title: "Reactions & viral clips",
           description:
-            "Matches, hot takes, viral clips, and live football debates with the whole community weighing in.",
+            "Trailers, weird TikToks submitted by chat, and unfiltered live reactions every broadcast.",
+          cta: "Watch on YouTube",
         },
         {
           id: "just-chatting",
           title: "Just Chatting & banter",
           description:
             "Unscripted hangouts, stories, and daily back-and-forth with the regulars who built the FDN community.",
+          cta: "Go to player",
         },
         {
-          id: "events",
-          title: "FDN events & showmatches",
+          id: "challenges",
+          title: "Challenges & dares",
           description:
-            "Special matchups, creator showmatches, community tournaments, and themed broadcast nights.",
+            "Multi-day challenges like the 80-day PS5 and GTA VI run, live dares, and chat-powered events.",
+          cta: "Watch on TikTok",
         },
         {
           id: "community-clips",
           title: "24/7 community clips",
           description:
             "An always-on Discord plus fan-run clip pages archiving the best moments from every stream.",
+          cta: "Explore community",
         },
       ],
     },
@@ -642,7 +653,7 @@ export const translations: Record<Locale, Translations> = {
     closing: {
       heading: "See you in the next stream.",
       cta: "Watch on Kick",
-      emblemAlt: "FDN geometric brand mark",
+      emblemAlt: "Official FDN emblem",
     },
     footer: {
       rights: "Feeden (FDN). Official Kick streamer community.",

@@ -8,7 +8,7 @@
 <section class="pt-14 pb-14 stack:pt-24 stack:pb-20">
   <div class="fdn-rail-frame">
     <div class="flex flex-col stack:flex-row">
-      <div class="flex w-full flex-col justify-between gap-9 bg-fdn-lime px-6 py-12 text-obsidian stack:w-[72%] stack:px-11 stack:py-16">
+      <div class="flex w-full flex-col justify-between gap-9 bg-fdn-lime px-6 py-12 text-obsidian stack:w-[70%] stack:px-11 stack:py-16">
         <h2 class="max-w-[12ch] font-display text-[clamp(44px,6vw,88px)] leading-[0.88] font-bold tracking-[-0.025em] text-obsidian">
           {i18n.t.closing.heading}
         </h2>
@@ -26,27 +26,49 @@
       </div>
 
       <div
-        class="hidden flex-col items-center justify-center gap-6 bg-fdn-deep p-10 stack:flex stack:w-[28%]"
-        aria-hidden="true"
+        class="relative hidden flex-col items-center justify-between border-l border-obsidian/15 bg-obsidian p-8 text-off-white stack:flex stack:w-[30%]"
       >
-        <div class="relative flex h-52 w-52 items-center justify-center">
-          <svg viewBox="0 0 220 220" class="h-full w-full" fill="none">
-            <path
-              d="M110 14 A96 96 0 1 0 198 148 L142 24 A96 96 0 0 0 110 14 Z"
-              fill="#0D9F67"
-            />
-            <circle cx="110" cy="110" r="78" stroke="#8BFF2A" stroke-width="2" stroke-dasharray="4 6" />
-          </svg>
+        <div class="flex w-full items-center justify-between font-mono text-[10px] tracking-[0.12em] text-muted-ink uppercase">
+          <span>FDN</span>
+          <span class="text-fdn-lime">KICK</span>
+        </div>
+
+        <div class="relative my-4 flex h-44 w-44 items-center justify-center">
+          <span
+            class="absolute top-0 left-0 h-3 w-3 border-t border-l border-fdn-lime/60"
+            aria-hidden="true"
+          ></span>
+          <span
+            class="absolute top-0 right-0 h-3 w-3 border-t border-r border-fdn-lime/60"
+            aria-hidden="true"
+          ></span>
+          <span
+            class="absolute bottom-0 left-0 h-3 w-3 border-b border-l border-fdn-lime/60"
+            aria-hidden="true"
+          ></span>
+          <span
+            class="absolute right-0 bottom-0 h-3 w-3 border-r border-b border-fdn-lime/60"
+            aria-hidden="true"
+          ></span>
           <img
             src="/logo-fdn.webp"
             alt={i18n.t.closing.emblemAlt}
-            width="124"
-            height="124"
+            width="136"
+            height="136"
             loading="lazy"
-            class="absolute h-28 w-28 object-contain"
+            class="h-32 w-32 object-contain"
           />
         </div>
-        <div class="h-5 w-48 bg-fdn-lime"></div>
+
+        <a
+          href={KICK_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="font-mono text-[11px] tracking-[0.06em] text-off-white/70 underline decoration-fdn-lime/40 underline-offset-4 transition-colors duration-150 hover:text-fdn-lime"
+          translate="no"
+        >
+          kick.com/feeden
+        </a>
       </div>
     </div>
   </div>

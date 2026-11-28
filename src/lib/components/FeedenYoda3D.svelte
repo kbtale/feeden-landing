@@ -1,11 +1,11 @@
 <script lang="ts">
-  import type { StreamLineupItem } from "../data/feeden";
+  import type { YouTubeVideoItem } from "../data/feeden";
   import { getI18n } from "../i18n/store.svelte";
   import type { FeedenYodaController } from "../utils/feedenYodaScene";
 
   interface Props {
     progress: number;
-    callouts?: readonly StreamLineupItem[];
+    callouts?: readonly YouTubeVideoItem[];
     activeCode?: string | null;
     showCallouts?: boolean;
   }
@@ -23,6 +23,7 @@
   let canvasEl = $state<HTMLCanvasElement | null>(null);
   let controller = $state<FeedenYodaController | null>(null);
   let webglAvailable = $state(true);
+  let sceneReady = $state(false);
 
   $effect(() => {
     if (!canvasEl) {
@@ -31,14 +32,20 @@
     const targetCanvas = canvasEl;
     let cancelled = false;
     let instance: FeedenYodaController | null = null;
+    sceneReady = false;
 
     void import("../utils/feedenYodaScene").then(({ mountFeedenYodaScene }) => {
       if (cancelled) {
         return;
       }
-      instance = mountFeedenYodaScene(targetCanvas, progress);
+      instance = mountFeedenYodaScene(targetCanvas, progress, () => {
+        if (!cancelled) {
+          sceneReady = true;
+        }
+      });
       if (!instance) {
         webglAvailable = false;
+        sceneReady = true;
         return;
       }
       controller = instance;
@@ -90,8 +97,84 @@
     <canvas
       bind:this={canvasEl}
       aria-hidden="true"
-      class="block h-full w-full"
+      class="block h-full w-full transition-opacity duration-500 ease-out {sceneReady
+        ? 'opacity-100'
+        : 'opacity-0'}"
     ></canvas>
+
+    <div
+      aria-hidden={sceneReady}
+      class="pointer-events-none absolute inset-0 flex flex-col items-center justify-center transition-[opacity,transform] duration-500 ease-out {sceneReady
+        ? 'scale-95 opacity-0'
+        : 'scale-100 opacity-100'}"
+    >
+      <div class="relative flex h-56 w-56 items-center justify-center">
+        <span
+          class="absolute top-0 left-0 h-4 w-4 border-t border-l border-fdn-lime/65"
+          aria-hidden="true"
+        ></span>
+        <span
+          class="absolute top-0 right-0 h-4 w-4 border-t border-r border-fdn-lime/65"
+          aria-hidden="true"
+        ></span>
+        <span
+          class="absolute bottom-0 left-0 h-4 w-4 border-b border-l border-fdn-lime/65"
+          aria-hidden="true"
+        ></span>
+        <span
+          class="absolute right-0 bottom-0 h-4 w-4 border-r border-b border-fdn-lime/65"
+          aria-hidden="true"
+        ></span>
+
+        <svg
+          viewBox="0 0 220 220"
+          class="fdn-loader-orbit absolute inset-0 h-full w-full"
+          fill="none"
+          aria-hidden="true"
+        >
+          <circle
+            cx="110"
+            cy="110"
+            r="84"
+            stroke="rgba(139, 255, 42, 0.25)"
+            stroke-width="1"
+          />
+          <circle
+            cx="110"
+            cy="110"
+            r="84"
+            stroke="#8BFF2A"
+            stroke-width="1.5"
+            stroke-dasharray="56 472"
+            stroke-linecap="round"
+          />
+        </svg>
+
+        <div class="relative flex h-28 w-28 items-center justify-center overflow-hidden">
+          <img
+            src="/logo-fdn.webp"
+            alt=""
+            width="112"
+            height="112"
+            fetchpriority="high"
+            class="h-24 w-24 object-contain opacity-90"
+          />
+          <span
+            class="fdn-loader-scan absolute inset-x-0 h-[2px] bg-fdn-lime"
+            aria-hidden="true"
+          ></span>
+        </div>
+      </div>
+
+      <div class="mt-4 flex flex-col items-center gap-2">
+        <span class="font-mono text-[11px] tracking-[0.12em] text-fdn-lime uppercase">
+          {i18n.t.hero.loaderLabel}
+        </span>
+        <div class="h-[2px] w-36 overflow-hidden bg-off-white/10">
+          <div class="fdn-loader-bar h-full w-1/2 bg-fdn-lime"></div>
+        </div>
+      </div>
+    </div>
   {:else}
     <div class="flex h-full w-full items-center justify-center p-8">
       <img
