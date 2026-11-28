@@ -4,7 +4,7 @@ import LiveStatusPillHarness from "../../test/LiveStatusPillHarness.svelte";
 import { createUnknownStatus } from "../utils/kickStatus";
 
 describe("LiveStatusPill component", () => {
-  it("displays LIVE badge and viewer count in Spanish and English", () => {
+  it("displays live badge and viewer count in Spanish and English", () => {
     vi.spyOn(window, "matchMedia").mockReturnValue({
       matches: true,
       media: "(prefers-reduced-motion: reduce)",
@@ -30,7 +30,7 @@ describe("LiveStatusPill component", () => {
       props: { locale: "es", status: liveStatus },
     });
 
-    expect(screen.getByText("EN VIVO")).toBeTruthy();
+    expect(screen.getByText("En vivo")).toBeTruthy();
     expect(screen.getByText(/1[.,]250 viewers/i)).toBeTruthy();
     unmount();
 
@@ -38,20 +38,20 @@ describe("LiveStatusPill component", () => {
       props: { locale: "en", status: liveStatus },
     });
 
-    expect(screen.getByText("LIVE")).toBeTruthy();
+    expect(screen.getByText("Live")).toBeTruthy();
     expect(screen.getByText(/1,250 viewers/i)).toBeTruthy();
   });
 
-  it("displays CHECKING and OFFLINE states", () => {
+  it("displays checking and offline states", () => {
     const { unmount } = render(LiveStatusPillHarness, {
       props: { locale: "es", status: createUnknownStatus(), checking: true },
     });
-    expect(screen.getByText("VERIFICANDO")).toBeTruthy();
+    expect(screen.getByText("Verificando")).toBeTruthy();
     unmount();
 
     render(LiveStatusPillHarness, {
       props: { locale: "en", status: createUnknownStatus(), checking: false },
     });
-    expect(screen.getByText("OFFLINE")).toBeTruthy();
+    expect(screen.getByText("Offline")).toBeTruthy();
   });
 });

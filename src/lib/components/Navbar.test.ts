@@ -14,7 +14,7 @@ describe("Navbar component", () => {
     const user = userEvent.setup();
     render(NavbarHarness, { props: { status: createUnknownStatus() } });
 
-    expect(screen.getAllByRole("link", { name: "En Vivo" }).length).toBeGreaterThan(0);
+    expect(screen.getAllByRole("link", { name: "En vivo" }).length).toBeGreaterThan(0);
     expect(screen.getAllByRole("link", { name: /Ver en Kick/i }).length).toBeGreaterThan(0);
 
     const enRadios = screen.getAllByRole("radio", { name: "EN" });
@@ -32,11 +32,12 @@ describe("Navbar component", () => {
     const menuTrigger = screen.getByRole("button", { name: /Abrir menu de navegacion/i });
     await user.click(menuTrigger);
 
-    expect(await screen.findByText("Menu de Feeden")).toBeTruthy();
-    const closeButton = screen.getByRole("button", { name: /Cerrar menu de navegacion/i });
+    const closeButton = await screen.findByRole("button", {
+      name: /Cerrar menu de navegacion/i,
+    });
     expect(closeButton).toBeTruthy();
 
     await user.keyboard("{Escape}");
-    expect(screen.queryByText("Menu de Feeden")).toBeNull();
+    expect(screen.queryByRole("button", { name: /Cerrar menu de navegacion/i })).toBeNull();
   });
 });

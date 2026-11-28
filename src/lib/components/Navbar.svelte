@@ -8,11 +8,10 @@
     DrawerTitle,
     DrawerTrigger,
   } from "@ui-sdk/svelte/drawer";
-  import { KICK_URL, OFFICIAL_SOCIALS } from "../data/feeden";
+  import { KICK_URL } from "../data/feeden";
   import { getI18n } from "../i18n/store.svelte";
   import type { KickStreamStatus } from "../utils/kickStatus";
   import LanguageSwitch from "./LanguageSwitch.svelte";
-  import LiveStatusPill from "./LiveStatusPill.svelte";
   import SocialIcons from "./SocialIcons.svelte";
 
   interface Props {
@@ -20,19 +19,36 @@
     checking?: boolean;
   }
 
-  let { status, checking = false }: Props = $props();
+  let { status }: Props = $props();
   const i18n = getI18n();
 
   let isAtTop = $state(true);
   let drawerOpen = $state(false);
+  let activeSection = $state<string>("");
+
+  const sectionIds = ["en-vivo", "stream", "comunidad", "redes"] as const;
 
   $effect(() => {
     if (typeof window === "undefined") {
       return;
     }
+
     const updateScroll = () => {
       isAtTop = window.scrollY <= 24;
+      let current = "";
+      for (const id of sectionIds) {
+        const el = document.getElementById(id);
+        if (!el) {
+          continue;
+        }
+        const rect = el.getBoundingClientRect();
+        if (rect.top <= 160 && rect.bottom > 100) {
+          current = id;
+        }
+      }
+      activeSection = current;
     };
+
     updateScroll();
     window.addEventListener("scroll", updateScroll, { passive: true });
     return () => {
@@ -41,10 +57,10 @@
   });
 
   const navLinks = $derived([
-    { href: "#en-vivo", label: i18n.t.nav.live },
-    { href: "#stream", label: i18n.t.nav.stream },
-    { href: "#comunidad", label: i18n.t.nav.community },
-    { href: "#redes", label: i18n.t.nav.socials },
+    { id: "en-vivo", href: "#en-vivo", label: i18n.t.nav.live },
+    { id: "stream", href: "#stream", label: i18n.t.nav.stream },
+    { id: "comunidad", href: "#comunidad", label: i18n.t.nav.community },
+    { id: "redes", href: "#redes", label: i18n.t.nav.socials },
   ]);
 
   function handleNavClick() {
@@ -54,39 +70,41 @@
 
 <header
   data-top={isAtTop ? "true" : "false"}
-  class="fdn-navbar fixed inset-x-0 top-0 z-40 h-[var(--nav-height)] pt-[env(safe-area-inset-top,0px)] transition-[background-color,border-color] duration-[var(--dur-state)] ease-[var(--ease-cg)]"
+  class="fdn-navbar fixed inset-x-0 top-0 z-40 h-[var(--nav-height)] pt-[env(safe-area-inset-top,0px)] transition-[background-color,border-color] duration-[var(--dur-state)] ease-[var(--ease-fdn)]"
 >
   <div class="fdn-container flex h-full items-center justify-between gap-4">
     <a
       href="#inicio"
       aria-label={i18n.t.a11y.brandHome}
-      class="inline-flex min-h-11 shrink-0 items-center gap-3 text-off-white no-underline"
+      class="inline-flex min-h-11 shrink-0 items-center gap-2.5 text-off-white no-underline"
     >
       <img
         src="/logo-fdn.webp"
         alt={i18n.t.hero.logoAlt}
-        width="36"
-        height="36"
-        class="h-9 w-9 shrink-0 object-contain"
+        width="26"
+        height="26"
+        class="h-[26px] w-[26px] shrink-0 object-contain"
       />
       <span
-        class="font-display text-[26px] leading-none font-bold tracking-[0.02em] uppercase"
+        class="font-display text-[21px] leading-none font-bold tracking-[-0.03em]"
         translate="no"
       >
-        FEEDEN
+        feeden
       </span>
     </a>
 
     <nav
       aria-label={i18n.t.a11y.mainNav}
-      class="hidden items-center gap-6 bar:flex"
+      class="hidden items-center gap-7 bar:flex wide:gap-9"
     >
-      <ul class="flex items-center gap-5">
+      <ul class="flex items-center gap-6 wide:gap-8">
         {#each navLinks as link (link.href)}
           <li>
             <a
               href={link.href}
-              class="fdn-nav-link inline-flex min-h-11 items-center font-mono text-[13px] tracking-[0.06em] text-body-ink uppercase no-underline transition-colors duration-150"
+              class="fdn-nav-link inline-flex min-h-9 items-center font-mono text-[14px] leading-none no-underline transition-colors duration-150 {activeSection === link.id
+                ? 'text-fdn-lime'
+                : 'text-warm-stone'}"
             >
               {link.label}
             </a>
@@ -94,110 +112,95 @@
         {/each}
       </ul>
 
-      <div class="flex items-center gap-3 border-l border-rule-strong pl-5">
+      <div class="flex items-center gap-3">
         <LanguageSwitch />
-        <LiveStatusPill {status} {checking} compact />
-        <a
-          href={KICK_URL}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="fdn-btn-primary"
-        >
-          <span>{i18n.t.nav.watchKick}</span>
-          <SocialIcons name="arrow-up-right" size={15} />
-        </a>
+
+        {#if status.isLive}
+          <a
+            href={KICK_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="fdn-btn-primary !min-h-[32px] !px-4 !text-[13px]"
+          >
+            <span class="inline-block h-2 w-2 rounded-full bg-obsidian" aria-hidden="true"></span>
+            <span>{i18n.t.nav.watchKick}</span>
+          </a>
+        {:else}
+          <a
+            href={KICK_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="fdn-btn-primary !min-h-[32px] !px-4 !text-[13px]"
+          >
+            <span>{i18n.t.nav.watchKick}</span>
+          </a>
+        {/if}
       </div>
     </nav>
 
     <div class="flex items-center gap-2 bar:hidden">
-      <LiveStatusPill {status} {checking} compact />
-
       <Drawer bind:open={drawerOpen} side="right">
         <DrawerTrigger
           aria-label={i18n.t.a11y.openMenu}
-          class="inline-flex h-11 w-11 cursor-pointer items-center justify-center border border-rule-strong bg-surface-900 text-off-white transition-colors duration-150 active:scale-[0.97]"
+          class="inline-flex h-11 w-11 cursor-pointer items-center justify-center text-off-white transition-opacity duration-150 active:opacity-70"
         >
-          <SocialIcons name="menu" size={20} />
+          <SocialIcons name="menu" size={22} />
         </DrawerTrigger>
         <DrawerBackdrop />
         <DrawerContent
-          class="flex h-[100dvh] w-full max-w-[420px] flex-col justify-between border-l border-rule-strong bg-obsidian px-5 pt-[calc(20px+env(safe-area-inset-top,0px))] pb-[calc(24px+env(safe-area-inset-bottom,0px))] text-off-white"
+          class="flex h-[100dvh] w-full max-w-none flex-col bg-obsidian px-5 pt-[env(safe-area-inset-top,0px)] pb-[calc(24px+env(safe-area-inset-bottom,0px))] text-off-white"
         >
-          <div>
-            <div class="flex items-center justify-between border-b border-rule-strong pb-4">
-              <div class="flex items-center gap-3">
-                <img
-                  src="/logo-fdn.webp"
-                  alt=""
-                  width="32"
-                  height="32"
-                  class="h-8 w-8 shrink-0 object-contain"
-                />
-                <div>
-                  <DrawerTitle class="font-display text-2xl leading-none font-bold uppercase">
-                    {i18n.t.a11y.mobileNavTitle}
-                  </DrawerTitle>
-                  <DrawerDescription class="sr-only">
-                    {i18n.t.a11y.mobileNavDescription}
-                  </DrawerDescription>
-                </div>
-              </div>
-
-              <DrawerClose
-                aria-label={i18n.t.a11y.closeMenu}
-                class="inline-flex h-11 w-11 cursor-pointer items-center justify-center border border-rule-strong bg-surface-900 text-off-white"
-              >
-                <SocialIcons name="close" size={20} />
-              </DrawerClose>
+          <div class="flex h-[54px] items-center justify-between border-b border-off-white/12">
+            <div class="flex items-center gap-2.5">
+              <img
+                src="/logo-fdn.webp"
+                alt=""
+                width="26"
+                height="26"
+                class="h-[26px] w-[26px] shrink-0 object-contain"
+              />
+              <DrawerTitle class="font-display text-[21px] leading-none font-bold tracking-[-0.03em]">
+                {i18n.t.a11y.mobileNavTitle}
+              </DrawerTitle>
+              <DrawerDescription class="sr-only">
+                {i18n.t.a11y.mobileNavDescription}
+              </DrawerDescription>
             </div>
 
-            <div class="flex items-center justify-between gap-3 border-b border-rule-strong py-4">
-              <LiveStatusPill {status} {checking} />
-              <LanguageSwitch />
-            </div>
-
-            <nav aria-label={i18n.t.a11y.mainNav} class="mt-2">
-              <ul class="divide-y divide-rule-strong border-b border-rule-strong">
-                {#each navLinks as link, idx (link.href)}
-                  <li>
-                    <a
-                      href={link.href}
-                      onclick={handleNavClick}
-                      class="flex min-h-[54px] items-center justify-between font-mono text-sm tracking-[0.08em] text-off-white uppercase no-underline"
-                    >
-                      <span>{link.label}</span>
-                      <span class="text-xs text-fdn-lime">0{idx + 1}</span>
-                    </a>
-                  </li>
-                {/each}
-              </ul>
-            </nav>
+            <DrawerClose
+              aria-label={i18n.t.a11y.closeMenu}
+              class="inline-flex h-11 w-11 cursor-pointer items-center justify-center text-off-white"
+            >
+              <SocialIcons name="close" size={22} />
+            </DrawerClose>
           </div>
 
-          <div class="mt-6 space-y-4">
-            <div class="grid grid-cols-2 gap-2 min-[400px]:grid-cols-3" aria-label={i18n.t.a11y.officialSocials}>
-              {#each OFFICIAL_SOCIALS as social (social.id)}
-                <a
-                  href={social.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="inline-flex min-h-11 items-center justify-center gap-2 border border-rule-strong bg-surface-700 px-2 font-mono text-xs text-body-ink no-underline"
-                >
-                  <SocialIcons name={social.id} size={15} />
-                  <span class="truncate">{social.name}</span>
-                </a>
+          <nav aria-label={i18n.t.a11y.mainNav} class="mt-2">
+            <ul class="divide-y divide-off-white/12 border-b border-off-white/12">
+              {#each navLinks as link (link.href)}
+                <li>
+                  <a
+                    href={link.href}
+                    onclick={handleNavClick}
+                    class="flex min-h-[58px] items-center font-mono text-[18px] text-off-white no-underline"
+                  >
+                    {link.label}
+                  </a>
+                </li>
               {/each}
-            </div>
+            </ul>
+          </nav>
 
+          <div class="mt-6 flex items-center justify-between gap-4">
             <a
               href={KICK_URL}
               target="_blank"
               rel="noopener noreferrer"
-              class="fdn-btn-primary w-full"
+              class="fdn-btn-primary w-[214px]"
             >
               <span>{i18n.t.nav.watchKick}</span>
-              <SocialIcons name="arrow-up-right" size={16} />
             </a>
+            <LanguageSwitch />
           </div>
         </DrawerContent>
       </Drawer>
@@ -222,9 +225,9 @@
     right: 0;
     bottom: 0;
     height: 1px;
-    background-color: var(--color-rule-strong);
+    background-color: color-mix(in oklab, var(--color-off-white) 12%, transparent);
     transform-origin: left center;
-    animation: nav-rule var(--dur-draw) var(--ease-cg) both;
+    animation: nav-rule var(--dur-draw) var(--ease-fdn) both;
   }
 
   @media (hover: hover) and (pointer: fine) {

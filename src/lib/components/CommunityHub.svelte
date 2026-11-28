@@ -6,10 +6,9 @@
     filterCommunityAccounts,
     type CommunityAccount,
     type CommunityFilter,
-    type CommunityPlatform,
   } from "../data/feeden";
   import { getI18n } from "../i18n/store.svelte";
-  import SocialIcons, { type IconName } from "./SocialIcons.svelte";
+  import SocialIcons from "./SocialIcons.svelte";
   import SubmitChannelDialog from "./SubmitChannelDialog.svelte";
 
   interface Props {
@@ -23,13 +22,6 @@
   let activeFilter = $state<CommunityFilter>("all");
   let dialogOpen = $state(false);
 
-  const platformIcon: Record<CommunityPlatform, IconName> = {
-    youtube: "youtube",
-    tiktok: "tiktok",
-    social: "instagram",
-    discord: "discord",
-  };
-
   function filterLabel(filter: CommunityFilter): string {
     return i18n.t.community.filters[filter];
   }
@@ -41,49 +33,44 @@
   }
 </script>
 
-<section id="comunidad" class="fdn-hairline-top py-14 stack:py-20">
-  <div class="fdn-container">
-    <div class="grid grid-cols-1 gap-10 stack:grid-cols-[minmax(0,0.85fr)_minmax(0,1.15fr)] stack:gap-12">
-      <div class="min-w-0 stack:sticky stack:top-[calc(var(--nav-height)+32px)] stack:self-start">
-        <p class="fdn-eyebrow text-fdn-lime">{i18n.t.community.eyebrow}</p>
-        <h2 class="mt-2 font-display text-[clamp(36px,4.5vw,64px)] leading-[1.02] font-bold tracking-[-0.01em] text-off-white">
-          {i18n.t.community.heading}
-        </h2>
-        <p class="mt-4 max-w-[44ch] text-base leading-relaxed text-body-ink">
-          {i18n.t.community.description}
-        </p>
+<section id="comunidad" class="fdn-hairline-top border-b border-rule-strong">
+  <div class="fdn-rail-frame">
+    <div class="grid grid-cols-1 stack:grid-cols-2">
+      <div class="min-w-0 px-5 py-12 stack:px-11 stack:py-16">
+        <div class="stack:sticky stack:top-[calc(var(--nav-height)+40px)]">
+          <p class="fdn-eyebrow text-fdn-lime">{i18n.t.community.eyebrow}</p>
+          <h2 class="mt-3 max-w-[14ch] font-display text-[clamp(32px,3.1vw,46px)] leading-[1.08] font-bold tracking-[-0.02em] text-off-white">
+            {i18n.t.community.heading}
+          </h2>
+          <p class="mt-4 max-w-[40ch] text-[15px] leading-[1.45] text-body-ink">
+            {i18n.t.community.description}
+          </p>
 
-        <div class="mt-6 flex items-center gap-3 border-y border-rule-strong py-3.5 font-mono text-xs tracking-[0.06em] uppercase">
-          <span class="fdn-tabular text-lg font-medium text-fdn-lime">
-            {String(accounts.length).padStart(2, "0")}
-          </span>
-          <span class="text-muted-ink">{i18n.t.community.countLabel}</span>
-        </div>
-
-        <div class="mt-6">
-          <button
-            type="button"
-            onclick={() => {
-              dialogOpen = true;
-            }}
-            class="fdn-btn-primary w-full panel:w-auto"
-          >
-            <span>{i18n.t.community.submitCta}</span>
-            <SocialIcons name="arrow-up-right" size={15} />
-          </button>
+          <div class="mt-7">
+            <button
+              type="button"
+              onclick={() => {
+                dialogOpen = true;
+              }}
+              class="fdn-btn-primary w-full panel:w-[214px]"
+            >
+              <span>{i18n.t.community.submitCta}</span>
+              <SocialIcons name="arrow-up-right" size={14} />
+            </button>
+          </div>
         </div>
       </div>
 
-      <div class="min-w-0">
+      <div class="min-w-0 border-t border-rule-strong stack:border-t-0 stack:border-l">
         <Tabs value={activeFilter} onValueChange={handleTabChange}>
           <TabsList
             aria-label={i18n.t.a11y.communityFilterTabs}
-            class="fdn-no-scrollbar flex items-center gap-1.5 overflow-x-auto pb-4"
+            class="fdn-no-scrollbar flex items-center gap-1 overflow-x-auto border-b border-rule-strong px-5 py-4 stack:px-11"
           >
             {#each COMMUNITY_FILTERS as filter (filter)}
               <TabsTab
                 value={filter}
-                class="inline-flex min-h-11 shrink-0 cursor-pointer items-center border border-rule-strong bg-surface-900 px-3.5 font-mono text-xs font-medium tracking-[0.06em] text-muted-ink uppercase transition-colors duration-150 data-selected:border-fdn-lime data-selected:bg-fdn-lime data-selected:text-obsidian"
+                class="inline-flex min-h-9 shrink-0 cursor-pointer items-center rounded-full px-3.5 font-mono text-[12px] text-muted-ink transition-colors duration-150 hover:text-off-white data-selected:bg-fdn-lime data-selected:font-medium data-selected:text-obsidian"
               >
                 {filterLabel(filter)}
               </TabsTab>
@@ -94,63 +81,44 @@
             {@const filtered = filterCommunityAccounts(accounts, filter)}
             <TabsPanel value={filter} class="min-w-0">
               {#if filtered.length > 0}
-                <ul class="divide-y divide-rule-strong border-y border-rule-strong">
+                <ul class="divide-y divide-rule-strong">
                   {#each filtered as account (account.id)}
                     <li>
                       <a
                         href={account.url}
                         target="_blank"
                         rel="noopener noreferrer"
-                        class="fdn-community-row group flex flex-col gap-4 py-5 text-off-white no-underline transition-colors duration-150 panel:flex-row panel:items-start panel:justify-between panel:px-4"
+                        class="fdn-community-row group block px-5 py-8 text-off-white no-underline transition-colors duration-300 stack:px-11 stack:py-10"
                       >
-                        <div class="flex min-w-0 flex-1 items-start gap-3.5">
-                          <span class="mt-0.5 inline-flex h-10 w-10 shrink-0 items-center justify-center border border-rule-strong bg-surface-900 text-fdn-lime">
-                            <SocialIcons name={platformIcon[account.platform]} size={18} />
-                          </span>
+                        <p class="font-mono text-[13px] text-body-ink/80" translate="no">
+                          {account.platformLabel} · {account.handle}
+                          {#if account.badge === "official"}
+                            <span class="text-fdn-lime"> · {i18n.t.community.badgeOfficial}</span>
+                          {/if}
+                        </p>
 
-                          <div class="min-w-0 flex-1">
-                            <div class="flex flex-wrap items-center gap-2">
-                              <h3 class="font-display text-2xl leading-none font-bold text-off-white">
-                                {account.name}
-                              </h3>
-                              <span
-                                class="shrink-0 px-2 py-0.5 font-mono text-[10px] font-medium tracking-[0.08em] uppercase whitespace-nowrap {account.badge === 'official'
-                                  ? 'bg-fdn-lime text-obsidian'
-                                  : 'border border-rule-strong bg-surface-900 text-fdn-lime'}"
-                              >
-                                {account.badge === "official"
-                                  ? i18n.t.community.badgeOfficial
-                                  : i18n.t.community.badgeFan}
-                              </span>
-                            </div>
+                        <h3 class="mt-3 max-w-[540px] font-display text-[24px] leading-[1.1] font-bold tracking-[-0.015em] text-off-white">
+                          {account.name}
+                        </h3>
 
-                            <p class="mt-1.5 font-mono text-xs text-muted-ink" translate="no">
-                              {account.platformLabel} · {account.handle}
-                            </p>
+                        <p class="mt-2.5 max-w-[52ch] break-words text-[14px] leading-[1.45] text-body-ink">
+                          {account.description[i18n.locale]}
+                        </p>
 
-                            <p class="mt-2.5 break-words text-sm leading-relaxed text-body-ink">
-                              {account.description[i18n.locale]}
-                            </p>
-                          </div>
-                        </div>
-
-                        <span class="fdn-community-cta inline-flex shrink-0 items-center gap-1.5 self-start font-mono text-xs font-medium tracking-[0.06em] text-muted-ink uppercase transition-colors duration-150 panel:mt-1">
+                        <span class="fdn-community-cta mt-4 inline-flex items-center gap-2 font-mono text-[13px] tracking-[0.04em] text-fdn-lime uppercase transition-colors duration-150">
                           <span>{i18n.t.community.visitCta}</span>
-                          <SocialIcons name="arrow-up-right" size={14} />
+                          <SocialIcons name="arrow-up-right" size={13} />
                         </span>
                       </a>
                     </li>
                   {/each}
                 </ul>
               {:else}
-                <div class="border border-rule-strong bg-surface-700 p-6 text-left panel:p-8">
-                  <p class="font-mono text-xs tracking-[0.08em] text-fdn-lime uppercase">
-                    {filterLabel(filter)}
-                  </p>
-                  <h3 class="mt-2 font-display text-2xl font-bold text-off-white">
+                <div class="px-5 py-10 stack:px-11">
+                  <h3 class="font-display text-2xl font-bold text-off-white">
                     {i18n.t.community.emptyTitle}
                   </h3>
-                  <p class="mt-2 max-w-[46ch] text-sm leading-relaxed text-body-ink">
+                  <p class="mt-2 max-w-[44ch] text-sm text-body-ink">
                     {i18n.t.community.emptyBody}
                   </p>
                   <button
@@ -178,11 +146,11 @@
 <style>
   @media (hover: hover) and (pointer: fine) {
     .fdn-community-row:hover {
-      background-color: rgba(244, 247, 242, 0.04);
+      background-color: rgba(250, 252, 249, 0.04);
     }
 
     .fdn-community-row:hover .fdn-community-cta {
-      color: var(--color-fdn-lime);
+      color: var(--color-off-white);
     }
   }
 </style>

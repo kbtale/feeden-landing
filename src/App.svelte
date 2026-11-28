@@ -10,10 +10,11 @@
   import ClosingCta from "./lib/components/ClosingCta.svelte";
   import CommunityHub from "./lib/components/CommunityHub.svelte";
   import Footer from "./lib/components/Footer.svelte";
-  import Hero from "./lib/components/Hero.svelte";
+  import HeroAndMorphStage from "./lib/components/HeroAndMorphStage.svelte";
+  import LiveAndVibeSlab from "./lib/components/LiveAndVibeSlab.svelte";
   import Navbar from "./lib/components/Navbar.svelte";
+  import OfficialSocialsSlab from "./lib/components/OfficialSocialsSlab.svelte";
   import StreamPillars from "./lib/components/StreamPillars.svelte";
-  import StreamStage from "./lib/components/StreamStage.svelte";
   import { KICK_URL } from "./lib/data/feeden";
   import { createI18nStore, setI18n } from "./lib/i18n/store.svelte";
   import {
@@ -83,10 +84,11 @@
 
 <div class="fdn-sheet fdn-rails">
   <main id="contenido-principal">
-    <Hero {status} {checking} onCopyChannel={handleCopyChannel} />
-    <StreamStage {status} onCopyChannel={handleCopyChannel} />
+    <HeroAndMorphStage {status} onCopyChannel={handleCopyChannel} />
+    <LiveAndVibeSlab onCopyChannel={handleCopyChannel} />
     <StreamPillars />
     <CommunityHub onCopyTemplate={handleCopyTemplate} />
+    <OfficialSocialsSlab />
     <ClosingCta />
   </main>
 </div>
@@ -96,7 +98,7 @@
 <ToastRegion {toaster} aria-label={i18n.t.a11y.toastRegion}>
   <Toast>
     <div class="min-w-0">
-      <ToastTitle class="font-mono text-xs font-medium tracking-[0.06em] text-fdn-lime uppercase" />
+      <ToastTitle class="font-mono text-xs font-medium tracking-[0.04em] text-fdn-lime uppercase" />
       <ToastDescription class="mt-0.5 font-sans text-xs text-body-ink" />
     </div>
   </Toast>
