@@ -12,7 +12,9 @@ describe("feedenYodaScene scroll morph math", () => {
   it("starts in Feeden streamer pose at progress 0", () => {
     const start = computeMorphParameters(0);
     expect(start.rotationY).toBe(0);
-    expect(start.headphoneScale).toBe(1);
+    expect(start.headMorph).toBe(0);
+    expect(start.hairScale).toBe(1);
+    expect(start.micScale).toBe(1);
     expect(start.earScale).toBe(0);
     expect(start.ringScale).toBe(0);
     expect(start.eyeGlow).toBe(0);
@@ -21,7 +23,9 @@ describe("feedenYodaScene scroll morph math", () => {
   it("rotates full 360 deg and completes FDN Yoda morph at progress 1", () => {
     const end = computeMorphParameters(1);
     expect(end.rotationY).toBeCloseTo(Math.PI * 2, 5);
-    expect(end.headphoneScale).toBe(0);
+    expect(end.headMorph).toBe(1);
+    expect(end.hairScale).toBe(0);
+    expect(end.micScale).toBe(0);
     expect(end.earScale).toBe(1);
     expect(end.ringScale).toBe(1);
     expect(end.eyeGlow).toBe(1);
@@ -32,6 +36,8 @@ describe("feedenYodaScene scroll morph math", () => {
     const mid = computeMorphParameters(0.5);
     expect(mid.rotationY).toBeGreaterThan(0);
     expect(mid.rotationY).toBeLessThan(Math.PI * 2);
+    expect(mid.headMorph).toBeGreaterThan(0);
+    expect(mid.headMorph).toBeLessThan(1);
     expect(mid.earScale).toBeGreaterThan(0);
     expect(mid.earScale).toBeLessThan(1);
   });

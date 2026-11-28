@@ -3,8 +3,10 @@ import * as THREE from "three";
 export interface MorphParameters {
   progress: number;
   rotationY: number;
+  headMorph: number;
+  hairScale: number;
+  micScale: number;
   earScale: number;
-  headphoneScale: number;
   ringScale: number;
   eyeGlow: number;
   cloakLift: number;
@@ -28,12 +30,481 @@ export function computeMorphParameters(rawProgress: number): MorphParameters {
   return {
     progress,
     rotationY: eased * Math.PI * 2,
-    earScale: smoothstep(0.22, 0.92, progress),
-    headphoneScale: 1 - smoothstep(0.05, 0.52, progress),
-    ringScale: smoothstep(0.32, 0.96, progress),
-    eyeGlow: smoothstep(0.25, 0.88, progress),
-    cloakLift: smoothstep(0.18, 0.85, progress),
+    headMorph: smoothstep(0.26, 0.88, progress),
+    hairScale: 1 - smoothstep(0.48, 0.74, progress),
+    micScale: 1 - smoothstep(0.05, 0.44, progress),
+    earScale: smoothstep(0.42, 0.94, progress),
+    ringScale: smoothstep(0.56, 0.96, progress),
+    eyeGlow: smoothstep(0.32, 0.8, progress),
+    cloakLift: smoothstep(0.32, 0.86, progress),
   };
+}
+
+function gauss3(
+  dx: number,
+  dy: number,
+  dz: number,
+  sx: number,
+  sy: number,
+  sz: number,
+): number {
+  const ex = dx / sx;
+  const ey = dy / sy;
+  const ez = dz / sz;
+  return Math.exp(-(ex * ex + ey * ey + ez * ez));
+}
+
+function sculptFeedenHeadPoint(nx: number, ny: number, nz: number): [number, number, number] {
+  let x = nx * 0.92;
+  let y = ny * 1.04;
+  let z = nz * 0.94;
+
+  const templeFlatten =
+    gauss3(Math.abs(nx) - 0.85, ny - 0.16, nz - 0.28, 0.24, 0.36, 0.42);
+  x -= Math.sign(nx) * templeFlatten * 0.06;
+
+  const cheekFullness =
+    gauss3(Math.abs(nx) - 0.52, ny + 0.14, nz - 0.62, 0.32, 0.28, 0.4);
+  x += Math.sign(nx) * cheekFullness * 0.095;
+  z += cheekFullness * 0.06;
+
+  const jawAngle =
+    gauss3(Math.abs(nx) - 0.46, ny + 0.48, nz - 0.36, 0.3, 0.24, 0.42);
+  x += Math.sign(nx) * jawAngle * 0.065;
+  y -= jawAngle * 0.03;
+
+  const chinShape = gauss3(nx, ny + 0.74, nz - 0.54, 0.24, 0.22, 0.32);
+  z += chinShape * 0.105;
+  y -= chinShape * 0.075;
+
+  const browTargetY = 0.23 + 0.06 * Math.min(1, Math.abs(nx) * 2.1);
+  const browRidge = gauss3(nx, ny - browTargetY, nz - 0.86, 0.48, 0.095, 0.26);
+  z += browRidge * 0.078;
+
+  const glabellaDip = gauss3(nx, ny - 0.2, nz - 0.92, 0.075, 0.075, 0.18);
+  z -= glabellaDip * 0.032;
+
+  const eyeSocket =
+    gauss3(nx - 0.3, ny - 0.11, nz - 0.88, 0.19, 0.135, 0.25) +
+    gauss3(nx + 0.3, ny - 0.11, nz - 0.88, 0.19, 0.135, 0.25);
+  z -= eyeSocket * 0.098;
+
+  const noseBridge = gauss3(nx, ny - 0.01, nz - 0.96, 0.1, 0.21, 0.24);
+  const noseTip = gauss3(nx, ny + 0.13, nz - 0.96, 0.105, 0.09, 0.22);
+  const nostrils =
+    gauss3(nx - 0.11, ny + 0.16, nz - 0.92, 0.07, 0.055, 0.18) +
+    gauss3(nx + 0.11, ny + 0.16, nz - 0.92, 0.07, 0.055, 0.18);
+  z += noseBridge * 0.09 + noseTip * 0.16 + nostrils * 0.055;
+  y -= noseTip * 0.016;
+
+  const upperLip = gauss3(nx, ny + 0.35, nz - 0.88, 0.185, 0.052, 0.18);
+  const mouthLineY = -0.4 - 0.016 * Math.min(1, (nx / 0.22) * (nx / 0.22));
+  const mouthCrease = gauss3(nx, ny - mouthLineY, nz - 0.88, 0.195, 0.026, 0.17);
+  const lowerLip = gauss3(nx, ny + 0.44, nz - 0.86, 0.16, 0.056, 0.18);
+  const chinFold = gauss3(nx, ny + 0.56, nz - 0.82, 0.17, 0.055, 0.18);
+  z += upperLip * 0.055 - mouthCrease * 0.036 + lowerLip * 0.062 - chinFold * 0.038;
+
+  return [x, y, z];
+}
+
+function sculptYodaHeadPoint(nx: number, ny: number, nz: number): [number, number, number] {
+  let x = nx * 1.07;
+  let y = ny * 0.88;
+  let z = nz * 0.97;
+
+  const browTargetY = 0.22 + 0.08 * Math.min(1, Math.abs(nx) * 1.9);
+  const fierceBrow = gauss3(nx, ny - browTargetY, nz - 0.86, 0.52, 0.12, 0.28);
+  z += fierceBrow * 0.115;
+
+  const cheekFlare = gauss3(Math.abs(nx) - 0.62, ny + 0.14, nz - 0.5, 0.34, 0.26, 0.38);
+  x += Math.sign(nx) * cheekFlare * 0.085;
+
+  const chinTaper = gauss3(nx, ny + 0.68, nz - 0.52, 0.32, 0.24, 0.36);
+  z += chinTaper * 0.045;
+
+  return [x, y, z];
+}
+
+function createMorphedHeadGeometry(): THREE.BufferGeometry {
+  const geometry = new THREE.SphereGeometry(1, 96, 72, -Math.PI / 2, Math.PI * 2);
+  const posAttr = geometry.attributes.position as THREE.BufferAttribute;
+  const count = posAttr.count;
+  const yodaPositions = new Float32Array(count * 3);
+
+  for (let i = 0; i < count; i++) {
+    const nx = posAttr.getX(i);
+    const ny = posAttr.getY(i);
+    const nz = posAttr.getZ(i);
+
+    const [fx, fy, fz] = sculptFeedenHeadPoint(nx, ny, nz);
+    posAttr.setXYZ(i, fx, fy, fz);
+
+    const [yx, yy, yz] = sculptYodaHeadPoint(nx, ny, nz);
+    yodaPositions[i * 3] = yx;
+    yodaPositions[i * 3 + 1] = yy;
+    yodaPositions[i * 3 + 2] = yz;
+  }
+
+  geometry.morphAttributes.position = [new THREE.BufferAttribute(yodaPositions, 3)];
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
+function createBowlFringeHairGeometry(): THREE.BufferGeometry {
+  const geometry = new THREE.SphereGeometry(
+    1,
+    96,
+    64,
+    -Math.PI / 2,
+    Math.PI * 2,
+    0,
+    Math.PI * 0.78,
+  );
+  const posAttr = geometry.attributes.position as THREE.BufferAttribute;
+
+  for (let i = 0; i < posAttr.count; i++) {
+    const nx = posAttr.getX(i);
+    const ny = posAttr.getY(i);
+    const nz = posAttr.getZ(i);
+
+    const az = Math.atan2(nx, nz);
+    const frontWeight = smoothstep(0.15, 0.68, nz);
+    const backWeight = smoothstep(-0.08, -0.62, nz);
+    const sideWeight = 1 - Math.max(frontWeight, backWeight);
+
+    const fringeNotch =
+      Math.sin(az * 13 + 0.4) * 0.022 + Math.cos(az * 23 - 0.8) * 0.014;
+    const frontEdgeY = 0.265 - nx * 0.065 + fringeNotch;
+    const sideEdgeY = 0.19;
+    const backEdgeY = -0.36;
+    const edgeY =
+      frontWeight * frontEdgeY + sideWeight * sideEdgeY + backWeight * backEdgeY;
+
+    const crownBoost = 1.07 + smoothstep(0.15, 0.95, ny) * 0.09;
+    const sideFull = 1.035 + sideWeight * smoothstep(0.1, 0.75, ny) * 0.06;
+    const frontFull = 1.045 + frontWeight * smoothstep(0.15, 0.7, ny) * 0.075;
+    const backFull = 1.055 + backWeight * smoothstep(-0.3, 0.6, ny) * 0.05;
+
+    let y = ny * 1.13 + 0.04;
+    if (y < edgeY) {
+      y = edgeY;
+    }
+
+    const nearEdge = smoothstep(0.2, 0, y - edgeY);
+    const strandRipple =
+      (Math.sin(az * 28 + ny * 2.4) * 0.011 + Math.sin(az * 46) * 0.006) *
+      (1 - smoothstep(0.7, 0.98, ny));
+
+    const rx = (sideWeight * sideFull + (1 - sideWeight) * 1.02) * (1 - nearEdge * 0.045);
+    const rz =
+      (frontWeight * frontFull + backWeight * backFull + sideWeight * 1.03) *
+      (1 - nearEdge * 0.035);
+
+    const x = nx * rx * (1 + strandRipple);
+    const z = nz * rz * (1 + strandRipple) + frontWeight * nearEdge * 0.03;
+
+    if (ny > 0.7) {
+      y = ny * crownBoost + 0.05;
+    }
+
+    posAttr.setXYZ(i, x, y, z);
+  }
+
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
+function createSculptedTorsoGeometry(): THREE.BufferGeometry {
+  const geometry = new THREE.SphereGeometry(
+    1,
+    72,
+    48,
+    -Math.PI / 2,
+    Math.PI * 2,
+    Math.PI * 0.14,
+    Math.PI * 0.78,
+  );
+  const posAttr = geometry.attributes.position as THREE.BufferAttribute;
+
+  for (let i = 0; i < posAttr.count; i++) {
+    const nx = posAttr.getX(i);
+    const ny = posAttr.getY(i);
+    const nz = posAttr.getZ(i);
+
+    const neckTaper = smoothstep(0.54, 0.92, ny);
+    const shoulderBand = gauss3(Math.abs(nx) - 0.88, ny - 0.24, nz, 0.34, 0.36, 0.56);
+    const chestFull = gauss3(nx, ny - 0.08, nz - 0.75, 0.62, 0.42, 0.42);
+    const sleeveDrop = smoothstep(0.35, -0.5, ny) * smoothstep(0.68, 0.98, Math.abs(nx));
+
+    const rx = 1.48 * (1 - neckTaper * 0.68) + shoulderBand * 0.12 - sleeveDrop * 0.14;
+    const ry = 0.86;
+    const rz = 0.66 * (1 - neckTaper * 0.38) + chestFull * 0.12;
+
+    const x = nx * rx;
+    let y = ny * ry - 1.18;
+    const z = nz * rz - 0.08;
+
+    if (ny < -0.58) {
+      y = -1.68;
+    }
+
+    posAttr.setXYZ(i, x, y, z);
+  }
+
+  geometry.computeVertexNormals();
+  return geometry;
+}
+
+function createFeedenFaceTexture(): THREE.CanvasTexture | null {
+  if (typeof document === "undefined") {
+    return null;
+  }
+  const width = 1024;
+  const height = 512;
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    return null;
+  }
+
+  const baseGrad = ctx.createLinearGradient(0, 0, 0, height);
+  baseGrad.addColorStop(0, "#BE896E");
+  baseGrad.addColorStop(0.45, "#CB967A");
+  baseGrad.addColorStop(0.76, "#C28B6F");
+  baseGrad.addColorStop(1, "#A67158");
+  ctx.fillStyle = baseGrad;
+  ctx.fillRect(0, 0, width, height);
+
+  const napeFade = ctx.createLinearGradient(0, height * 0.28, 0, height * 0.66);
+  napeFade.addColorStop(0, "rgba(18, 20, 24, 0.58)");
+  napeFade.addColorStop(0.65, "rgba(28, 26, 26, 0.25)");
+  napeFade.addColorStop(1, "rgba(28, 26, 26, 0)");
+  ctx.fillStyle = napeFade;
+  ctx.fillRect(0, height * 0.28, width * 0.28, height * 0.38);
+  ctx.fillRect(width * 0.72, height * 0.28, width * 0.28, height * 0.38);
+
+  const cx = width * 0.5;
+  const foreheadShadow = ctx.createLinearGradient(0, height * 0.24, 0, height * 0.4);
+  foreheadShadow.addColorStop(0, "rgba(38, 24, 18, 0.42)");
+  foreheadShadow.addColorStop(1, "rgba(38, 24, 18, 0)");
+  ctx.fillStyle = foreheadShadow;
+  ctx.fillRect(cx - 170, height * 0.24, 340, height * 0.16);
+
+  for (const dir of [-1, 1]) {
+    const ex = cx + dir * 51;
+    const ey = height * 0.46;
+    const socket = ctx.createRadialGradient(ex, ey, 6, ex, ey, 42);
+    socket.addColorStop(0, "rgba(74, 42, 32, 0.32)");
+    socket.addColorStop(1, "rgba(74, 42, 32, 0)");
+    ctx.fillStyle = socket;
+    ctx.beginPath();
+    ctx.ellipse(ex, ey, 40, 24, 0, 0, Math.PI * 2);
+    ctx.fill();
+
+    const cheekX = cx + dir * 82;
+    const cheekY = height * 0.57;
+    const blush = ctx.createRadialGradient(cheekX, cheekY, 4, cheekX, cheekY, 54);
+    blush.addColorStop(0, "rgba(184, 102, 82, 0.22)");
+    blush.addColorStop(1, "rgba(184, 102, 82, 0)");
+    ctx.fillStyle = blush;
+    ctx.beginPath();
+    ctx.arc(cheekX, cheekY, 54, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  const noseShadow = ctx.createRadialGradient(cx, height * 0.565, 4, cx, height * 0.565, 28);
+  noseShadow.addColorStop(0, "rgba(96, 56, 44, 0.34)");
+  noseShadow.addColorStop(1, "rgba(96, 56, 44, 0)");
+  ctx.fillStyle = noseShadow;
+  ctx.beginPath();
+  ctx.ellipse(cx, height * 0.565, 25, 13, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = "rgba(76, 44, 34, 0.42)";
+  ctx.beginPath();
+  ctx.ellipse(cx - 10, height * 0.564, 5, 2.6, 0.15, 0, Math.PI * 2);
+  ctx.ellipse(cx + 10, height * 0.564, 5, 2.6, -0.15, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = "rgba(154, 96, 84, 0.54)";
+  ctx.beginPath();
+  ctx.ellipse(cx, height * 0.632, 34, 8.5, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.strokeStyle = "rgba(88, 48, 40, 0.78)";
+  ctx.lineWidth = 2.8;
+  ctx.lineCap = "round";
+  ctx.beginPath();
+  ctx.moveTo(cx - 33, height * 0.634);
+  ctx.quadraticCurveTo(cx, height * 0.629, cx + 33, height * 0.634);
+  ctx.stroke();
+
+  const lowerLipHighlight = ctx.createRadialGradient(cx, height * 0.642, 1, cx, height * 0.642, 18);
+  lowerLipHighlight.addColorStop(0, "rgba(222, 174, 156, 0.25)");
+  lowerLipHighlight.addColorStop(1, "rgba(222, 174, 156, 0)");
+  ctx.fillStyle = lowerLipHighlight;
+  ctx.beginPath();
+  ctx.ellipse(cx, height * 0.642, 18, 5, 0, 0, Math.PI * 2);
+  ctx.fill();
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.needsUpdate = true;
+  return texture;
+}
+
+function createEyeTexture(): THREE.CanvasTexture | null {
+  if (typeof document === "undefined") {
+    return null;
+  }
+  const canvas = document.createElement("canvas");
+  canvas.width = 256;
+  canvas.height = 128;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    return null;
+  }
+
+  ctx.fillStyle = "#F2ECE6";
+  ctx.fillRect(0, 0, 256, 128);
+
+  const cx = 128;
+  const cy = 64;
+
+  const irisGrad = ctx.createRadialGradient(cx, cy, 4, cx, cy, 27);
+  irisGrad.addColorStop(0, "#1A100A");
+  irisGrad.addColorStop(0.58, "#3B2216");
+  irisGrad.addColorStop(0.92, "#1A100A");
+  irisGrad.addColorStop(1, "#120B07");
+  ctx.fillStyle = irisGrad;
+  ctx.beginPath();
+  ctx.arc(cx, cy, 27, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = "#060505";
+  ctx.beginPath();
+  ctx.arc(cx, cy, 13, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = "#FFFFFF";
+  ctx.beginPath();
+  ctx.arc(cx + 8, cy - 8, 5.2, 0, Math.PI * 2);
+  ctx.fill();
+
+  ctx.fillStyle = "rgba(255, 255, 255, 0.6)";
+  ctx.beginPath();
+  ctx.arc(cx - 6, cy + 6, 2.4, 0, Math.PI * 2);
+  ctx.fill();
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.needsUpdate = true;
+  return texture;
+}
+
+function createNavyTeeTexture(): THREE.CanvasTexture | null {
+  if (typeof document === "undefined") {
+    return null;
+  }
+  const width = 1024;
+  const height = 512;
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    return null;
+  }
+
+  const grad = ctx.createLinearGradient(0, 0, 0, height);
+  grad.addColorStop(0, "#162A4C");
+  grad.addColorStop(0.5, "#132341");
+  grad.addColorStop(1, "#0E1B33");
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, width, height);
+
+  ctx.fillStyle = "rgba(255, 255, 255, 0.022)";
+  for (let y = 0; y < height; y += 5) {
+    ctx.fillRect(0, y, width, 1);
+  }
+
+  ctx.fillStyle = "#0E1A30";
+  ctx.fillRect(0, 0, width, 34);
+
+  const cx = width * 0.5;
+  const boxW = 244;
+  const boxH = 108;
+  const boxX = cx - boxW / 2;
+  const boxY = 178;
+
+  ctx.fillStyle = "#101E38";
+  ctx.fillRect(boxX - 3, boxY - 3, boxW + 6, boxH + 6);
+
+  const barCount = 58;
+  const barStep = boxW / barCount;
+  for (let i = 0; i < barCount; i++) {
+    const x = boxX + i * barStep;
+    const isLight = i % 2 === 0;
+    ctx.fillStyle = isLight ? "#CBD6E4" : "#1F3356";
+    ctx.fillRect(x, boxY, Math.max(1.5, barStep * 0.58), 48);
+    ctx.fillRect(x + barStep * 0.14, boxY + 55, Math.max(1.5, barStep * 0.58), 51);
+  }
+
+  ctx.fillStyle = "#142544";
+  ctx.fillRect(boxX, boxY + 48, boxW, 7);
+
+  ctx.fillStyle = "#C6D2E0";
+  ctx.fillRect(boxX + boxW - 28, boxY + boxH + 9, 26, 5);
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.needsUpdate = true;
+  return texture;
+}
+
+function createMicMeshTexture(): THREE.CanvasTexture | null {
+  if (typeof document === "undefined") {
+    return null;
+  }
+  const width = 256;
+  const height = 256;
+  const canvas = document.createElement("canvas");
+  canvas.width = width;
+  canvas.height = height;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) {
+    return null;
+  }
+
+  ctx.fillStyle = "#0C1520";
+  ctx.fillRect(0, 0, width, height);
+
+  const cols = 20;
+  const rows = 20;
+  const stepX = width / cols;
+  const stepY = height / rows;
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const offset = row % 2 === 0 ? 0 : stepX * 0.5;
+      const x = (col * stepX + offset) % width;
+      const y = row * stepY + stepY * 0.5;
+      const t = row / rows;
+      ctx.fillStyle = t < 0.5 ? "#54F0FF" : "#24B8F0";
+      ctx.beginPath();
+      ctx.arc(x, y, 3.2, 0, Math.PI * 2);
+      ctx.fill();
+    }
+  }
+
+  const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
+  texture.wrapS = THREE.RepeatWrapping;
+  texture.wrapT = THREE.RepeatWrapping;
+  texture.needsUpdate = true;
+  return texture;
 }
 
 function createYodaEarGeometry(): THREE.ExtrudeGeometry {
@@ -107,6 +578,7 @@ function createFdnBadgeTexture(): THREE.CanvasTexture | null {
   ctx.fillText("FDN", 128, 66);
 
   const texture = new THREE.CanvasTexture(canvas);
+  texture.colorSpace = THREE.SRGBColorSpace;
   texture.needsUpdate = true;
   return texture;
 }
@@ -139,149 +611,141 @@ export function mountFeedenYodaScene(
 
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(34, 1, 0.1, 100);
-  camera.position.set(0, 0.06, 7.25);
+  camera.position.set(0, -0.02, 7.45);
 
-  const ambientLight = new THREE.AmbientLight(0xe4f7eb, 1.05);
+  const ambientLight = new THREE.AmbientLight(0xeef4f8, 1.05);
   scene.add(ambientLight);
 
-  const keyLight = new THREE.DirectionalLight(0xffffff, 1.9);
-  keyLight.position.set(3.2, 4.6, 5.6);
+  const keyLight = new THREE.DirectionalLight(0xfff4ea, 1.95);
+  keyLight.position.set(2.8, 3.8, 5.4);
   scene.add(keyLight);
 
-  const rimLight = new THREE.PointLight(0x8bff2a, 4.2, 18);
-  rimLight.position.set(-2.8, 1.9, -2.4);
-  scene.add(rimLight);
+  const coolHairRim = new THREE.DirectionalLight(0xb0d0f8, 1.55);
+  coolHairRim.position.set(-3.2, 4.2, -3.4);
+  scene.add(coolHairRim);
 
-  const emeraldFill = new THREE.PointLight(0x0d9f67, 2.8, 16);
-  emeraldFill.position.set(3.0, -1.6, 2.6);
+  const limeRimLight = new THREE.PointLight(0x8bff2a, 1.4, 18);
+  limeRimLight.position.set(-2.9, 1.8, -2.2);
+  scene.add(limeRimLight);
+
+  const emeraldFill = new THREE.PointLight(0x0d9f67, 1.5, 16);
+  emeraldFill.position.set(3.2, -1.5, 2.4);
   scene.add(emeraldFill);
+
+  const yodaFrontFill = new THREE.PointLight(0x4ade80, 0, 14);
+  yodaFrontFill.position.set(0, 1.4, 3.8);
+  scene.add(yodaFrontFill);
 
   const root = new THREE.Group();
   scene.add(root);
 
-  const streamerSkinColor = new THREE.Color("#D4B297");
-  const yodaObsidianColor = new THREE.Color("#0B111A");
-  const streamerEyesColor = new THREE.Color("#11161C");
+  const headAnchor = new THREE.Group();
+  headAnchor.position.set(0, 0.42, 0);
+  root.add(headAnchor);
+
+  const neutralWhite = new THREE.Color("#FFFFFF");
+  const yodaHeadTint = new THREE.Color("#1A3022");
+  const skinSolidColor = new THREE.Color("#C79175");
+  const yodaObsidianColor = new THREE.Color("#0D1913");
   const yodaLimeColor = new THREE.Color("#8BFF2A");
   const workingColor = new THREE.Color();
 
+  const faceTexture = createFeedenFaceTexture();
+  const headGeometry = createMorphedHeadGeometry();
   const headMaterial = new THREE.MeshStandardMaterial({
-    color: streamerSkinColor.clone(),
-    roughness: 0.54,
-    metalness: 0.06,
+    color: neutralWhite.clone(),
+    map: faceTexture ?? undefined,
+    roughness: 0.62,
+    metalness: 0.04,
   });
 
-  const headMesh = new THREE.Mesh(new THREE.SphereGeometry(1.04, 44, 36), headMaterial);
-  headMesh.scale.set(1.0, 1.05, 0.96);
-  headMesh.position.set(0, 0.28, 0);
-  root.add(headMesh);
+  const headMesh = new THREE.Mesh(headGeometry, headMaterial);
+  headMesh.morphTargetInfluences = [0];
+  headAnchor.add(headMesh);
 
   const hairGroup = new THREE.Group();
   const hairMaterial = new THREE.MeshStandardMaterial({
-    color: 0x161c22,
+    color: 0x111419,
+    roughness: 0.78,
+    metalness: 0.02,
+    side: THREE.DoubleSide,
+    transparent: true,
+    opacity: 1,
+  });
+
+  const bowlHairMesh = new THREE.Mesh(createBowlFringeHairGeometry(), hairMaterial);
+  bowlHairMesh.position.set(0, 0.01, -0.01);
+  hairGroup.add(bowlHairMesh);
+  headAnchor.add(hairGroup);
+
+  const humanEarsGroup = new THREE.Group();
+  const skinSolidMat = new THREE.MeshStandardMaterial({
+    color: skinSolidColor.clone(),
+    roughness: 0.64,
+    metalness: 0.03,
+  });
+  const earInnerShadowMat = new THREE.MeshStandardMaterial({
+    color: 0x9b6851,
     roughness: 0.72,
-    metalness: 0.05,
   });
-  const hairCap = new THREE.Mesh(
-    new THREE.SphereGeometry(1.09, 36, 24, 0, Math.PI * 2, 0, Math.PI * 0.42),
-    hairMaterial,
-  );
-  hairCap.position.set(0, 0.34, -0.04);
-  hairCap.rotation.x = -0.24;
-  hairGroup.add(hairCap);
-
-  const hairQuiff = new THREE.Mesh(new THREE.CapsuleGeometry(0.22, 0.62, 8, 16), hairMaterial);
-  hairQuiff.rotation.set(0.18, 0.14, Math.PI * 0.44);
-  hairQuiff.position.set(0.08, 1.18, 0.36);
-  hairGroup.add(hairQuiff);
-  root.add(hairGroup);
-
-  const headphoneGroup = new THREE.Group();
-  const hpShellMat = new THREE.MeshStandardMaterial({
-    color: 0x192026,
-    roughness: 0.34,
-    metalness: 0.45,
-  });
-  const hpLimeMat = new THREE.MeshStandardMaterial({
-    color: 0x8bff2a,
-    emissive: 0x56f000,
-    emissiveIntensity: 0.75,
-    roughness: 0.24,
-    metalness: 0.2,
-  });
-
-  const band = new THREE.Mesh(
-    new THREE.TorusGeometry(1.22, 0.09, 16, 48, Math.PI * 1.04),
-    hpShellMat,
-  );
-  band.rotation.z = -Math.PI * 0.02;
-  band.position.set(0, 0.3, 0);
-  headphoneGroup.add(band);
 
   for (const side of [-1, 1]) {
-    const cup = new THREE.Mesh(new THREE.CylinderGeometry(0.35, 0.37, 0.22, 28), hpShellMat);
-    cup.rotation.z = Math.PI / 2;
-    cup.position.set(side * 1.14, 0.24, 0);
-    headphoneGroup.add(cup);
+    const earOuter = new THREE.Mesh(new THREE.SphereGeometry(0.185, 20, 18), skinSolidMat);
+    earOuter.scale.set(0.4, 1.04, 0.72);
+    earOuter.position.set(side * 0.92, -0.01, -0.04);
+    earOuter.rotation.y = side * -0.22;
+    earOuter.rotation.z = side * -0.1;
+    humanEarsGroup.add(earOuter);
 
-    const cupRing = new THREE.Mesh(new THREE.TorusGeometry(0.26, 0.032, 12, 32), hpLimeMat);
-    cupRing.rotation.y = Math.PI / 2;
-    cupRing.position.set(side * 1.26, 0.24, 0);
-    headphoneGroup.add(cupRing);
+    const earInner = new THREE.Mesh(new THREE.SphereGeometry(0.105, 14, 14), earInnerShadowMat);
+    earInner.scale.set(0.32, 0.82, 0.54);
+    earInner.position.set(side * 0.94, -0.02, -0.01);
+    humanEarsGroup.add(earInner);
   }
-
-  const micArm = new THREE.Mesh(new THREE.CapsuleGeometry(0.026, 0.68, 6, 12), hpShellMat);
-  micArm.rotation.set(0.48, 0.22, -0.78);
-  micArm.position.set(-0.76, -0.06, 0.62);
-  headphoneGroup.add(micArm);
-
-  const micTip = new THREE.Mesh(new THREE.SphereGeometry(0.06, 14, 14), hpLimeMat);
-  micTip.position.set(-0.44, -0.24, 0.94);
-  headphoneGroup.add(micTip);
-  root.add(headphoneGroup);
+  headAnchor.add(humanEarsGroup);
 
   const streamerFaceGroup = new THREE.Group();
-  const streamerEyeMat = new THREE.MeshStandardMaterial({
-    color: streamerEyesColor,
-    roughness: 0.16,
-    metalness: 0.12,
+  const eyeTexture = createEyeTexture();
+  const eyeBallMat = new THREE.MeshStandardMaterial({
+    color: 0xffffff,
+    map: eyeTexture ?? undefined,
+    roughness: 0.12,
+    metalness: 0.08,
   });
-  const catchlightMat = new THREE.MeshBasicMaterial({ color: 0xffffff });
-  const mouthMat = new THREE.MeshStandardMaterial({
-    color: 0x3b2a22,
-    roughness: 0.65,
+  const eyelidMat = new THREE.MeshStandardMaterial({
+    color: 0xb98267,
+    roughness: 0.64,
+  });
+  const browMat = new THREE.MeshStandardMaterial({
+    color: 0x101216,
+    roughness: 0.76,
   });
 
   for (const side of [-1, 1]) {
-    const eye = new THREE.Mesh(new THREE.SphereGeometry(0.115, 20, 20), streamerEyeMat);
-    eye.scale.set(1.08, 1.0, 0.65);
-    eye.position.set(side * 0.34, 0.27, 0.95);
-    streamerFaceGroup.add(eye);
+    const eyeball = new THREE.Mesh(
+      new THREE.SphereGeometry(0.118, 24, 24, -Math.PI / 2, Math.PI * 2),
+      eyeBallMat,
+    );
+    eyeball.position.set(side * 0.295, 0.115, 0.835);
+    eyeball.rotation.y = -0.05;
+    streamerFaceGroup.add(eyeball);
 
-    const catchlight = new THREE.Mesh(new THREE.SphereGeometry(0.032, 10, 10), catchlightMat);
-    catchlight.position.set(side * 0.34 + 0.035, 0.31, 1.02);
-    streamerFaceGroup.add(catchlight);
+    const upperLid = new THREE.Mesh(
+      new THREE.SphereGeometry(0.129, 22, 16, -Math.PI / 2, Math.PI * 2, 0, Math.PI * 0.37),
+      eyelidMat,
+    );
+    upperLid.position.set(side * 0.295, 0.128, 0.835);
+    upperLid.rotation.x = 0.2;
+    upperLid.rotation.z = side * -0.14;
+    streamerFaceGroup.add(upperLid);
 
-    const brow = new THREE.Mesh(new THREE.CapsuleGeometry(0.035, 0.22, 6, 12), hairMaterial);
-    brow.rotation.z = Math.PI / 2 + side * -0.1;
-    brow.position.set(side * 0.34, 0.48, 0.94);
+    const brow = new THREE.Mesh(new THREE.CapsuleGeometry(0.032, 0.27, 6, 12), browMat);
+    brow.position.set(side * 0.3, 0.245, 0.895);
+    brow.rotation.z = Math.PI / 2 + side * -0.19;
+    brow.rotation.y = side * -0.24;
     streamerFaceGroup.add(brow);
   }
-
-  const nose = new THREE.Mesh(new THREE.SphereGeometry(0.065, 14, 14), headMaterial);
-  nose.scale.set(0.9, 1.15, 0.9);
-  nose.position.set(0, 0.11, 1.01);
-  streamerFaceGroup.add(nose);
-
-  const smile = new THREE.Mesh(
-    new THREE.TorusGeometry(0.15, 0.022, 10, 24, Math.PI * 0.72),
-    mouthMat,
-  );
-  smile.rotation.z = Math.PI * 1.14;
-  smile.position.set(0, -0.02, 0.96);
-  streamerFaceGroup.add(smile);
-
-  root.add(streamerFaceGroup);
+  headAnchor.add(streamerFaceGroup);
 
   const mascotEyesGroup = new THREE.Group();
   const mascotEyeMat = new THREE.MeshStandardMaterial({
@@ -291,24 +755,24 @@ export function mountFeedenYodaScene(
     roughness: 0.2,
     metalness: 0.1,
   });
-  const eyeGeo = createMascotEyeGeometry();
-  const leftMascotEye = new THREE.Mesh(eyeGeo, mascotEyeMat);
-  leftMascotEye.position.set(-0.34, 0.3, 0.98);
+  const mascotEyeGeo = createMascotEyeGeometry();
+  const leftMascotEye = new THREE.Mesh(mascotEyeGeo, mascotEyeMat);
+  leftMascotEye.position.set(-0.34, 0.16, 0.94);
   leftMascotEye.rotation.y = -0.22;
   mascotEyesGroup.add(leftMascotEye);
 
-  const rightMascotEye = new THREE.Mesh(eyeGeo, mascotEyeMat);
+  const rightMascotEye = new THREE.Mesh(mascotEyeGeo, mascotEyeMat);
   rightMascotEye.scale.x = -1;
-  rightMascotEye.position.set(0.34, 0.3, 0.98);
+  rightMascotEye.position.set(0.34, 0.16, 0.94);
   rightMascotEye.rotation.y = 0.22;
   mascotEyesGroup.add(rightMascotEye);
-  root.add(mascotEyesGroup);
+  headAnchor.add(mascotEyesGroup);
 
-  const earsGroup = new THREE.Group();
+  const yodaEarsGroup = new THREE.Group();
   const outerEarMat = new THREE.MeshStandardMaterial({
-    color: 0x0a111a,
+    color: 0x0a1312,
     emissive: 0x164208,
-    emissiveIntensity: 0.35,
+    emissiveIntensity: 0.4,
     roughness: 0.42,
     metalness: 0.15,
   });
@@ -323,36 +787,68 @@ export function mountFeedenYodaScene(
   const innerEarGeo = createInnerEarGeometry();
 
   const rightEarPivot = new THREE.Group();
-  rightEarPivot.position.set(0.84, 0.28, -0.02);
+  rightEarPivot.position.set(0.86, 0.08, -0.02);
   const rightEarMesh = new THREE.Mesh(earGeo, outerEarMat);
   const rightInnerEar = new THREE.Mesh(innerEarGeo, innerEarMat);
   rightInnerEar.position.set(0.02, 0, 0.105);
   rightEarPivot.add(rightEarMesh, rightInnerEar);
 
   const leftEarPivot = new THREE.Group();
-  leftEarPivot.position.set(-0.84, 0.28, -0.02);
+  leftEarPivot.position.set(-0.86, 0.08, -0.02);
   leftEarPivot.scale.x = -1;
   const leftEarMesh = new THREE.Mesh(earGeo, outerEarMat);
   const leftInnerEar = new THREE.Mesh(innerEarGeo, innerEarMat);
   leftInnerEar.position.set(0.02, 0, 0.105);
   leftEarPivot.add(leftEarMesh, leftInnerEar);
 
-  earsGroup.add(leftEarPivot, rightEarPivot);
-  root.add(earsGroup);
+  yodaEarsGroup.add(leftEarPivot, rightEarPivot);
+  headAnchor.add(yodaEarsGroup);
 
-  const cloakMaterial = new THREE.MeshStandardMaterial({
-    color: 0x121922,
-    roughness: 0.64,
-    metalness: 0.12,
+  const neckMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.42, 0.56, 32), skinSolidMat);
+  neckMesh.position.set(0, -0.5, -0.07);
+  neckMesh.rotation.x = 0.08;
+  root.add(neckMesh);
+
+  const torsoGeo = createSculptedTorsoGeometry();
+  const shirtTexture = createNavyTeeTexture();
+  const torsoMaterial = new THREE.MeshStandardMaterial({
+    color: neutralWhite.clone(),
+    map: shirtTexture ?? undefined,
+    roughness: 0.78,
+    metalness: 0.04,
   });
-  const shoulders = new THREE.Mesh(new THREE.CylinderGeometry(0.84, 1.28, 1.0, 36), cloakMaterial);
-  shoulders.position.set(0, -1.12, -0.06);
-  root.add(shoulders);
+  const torsoMesh = new THREE.Mesh(torsoGeo, torsoMaterial);
+  root.add(torsoMesh);
 
-  const collarMesh = new THREE.Mesh(new THREE.TorusGeometry(0.84, 0.16, 18, 36), cloakMaterial);
-  collarMesh.rotation.x = Math.PI * 0.45;
-  collarMesh.position.set(0, -0.72, 0.04);
-  root.add(collarMesh);
+  const cloakShellMaterial = new THREE.MeshStandardMaterial({
+    color: 0x0d141c,
+    roughness: 0.62,
+    metalness: 0.12,
+    transparent: true,
+    opacity: 0,
+  });
+  const cloakShellMesh = new THREE.Mesh(torsoGeo, cloakShellMaterial);
+  cloakShellMesh.scale.setScalar(1.012);
+  root.add(cloakShellMesh);
+
+  const crewNeckMat = new THREE.MeshStandardMaterial({
+    color: 0x101d35,
+    roughness: 0.78,
+  });
+  const crewNeckRim = new THREE.Mesh(new THREE.TorusGeometry(0.46, 0.06, 14, 36), crewNeckMat);
+  crewNeckRim.rotation.x = Math.PI * 0.48;
+  crewNeckRim.position.set(0, -0.66, -0.04);
+  root.add(crewNeckRim);
+
+  const cloakCollarMat = new THREE.MeshStandardMaterial({
+    color: 0x101822,
+    roughness: 0.62,
+    metalness: 0.14,
+  });
+  const cloakCollar = new THREE.Mesh(new THREE.TorusGeometry(0.82, 0.16, 18, 36), cloakCollarMat);
+  cloakCollar.rotation.x = Math.PI * 0.45;
+  cloakCollar.position.set(0, -0.78, 0.02);
+  root.add(cloakCollar);
 
   const badgeTexture = createFdnBadgeTexture();
   const badgeMaterial = new THREE.MeshBasicMaterial({
@@ -361,10 +857,43 @@ export function mountFeedenYodaScene(
     transparent: true,
     opacity: 0,
   });
-  const badgeMesh = new THREE.Mesh(new THREE.PlaneGeometry(0.88, 0.44), badgeMaterial);
-  badgeMesh.position.set(0, -1.04, 1.18);
-  badgeMesh.rotation.x = -0.34;
+  const badgeMesh = new THREE.Mesh(new THREE.PlaneGeometry(0.84, 0.42), badgeMaterial);
+  badgeMesh.position.set(0, -1.12, 0.78);
+  badgeMesh.rotation.x = -0.14;
   root.add(badgeMesh);
+
+  const micGroup = new THREE.Group();
+  micGroup.position.set(-1.12, -1.18, 0.94);
+  micGroup.rotation.set(0.08, 0.25, -0.14);
+
+  const micCapMat = new THREE.MeshStandardMaterial({
+    color: 0x141920,
+    roughness: 0.4,
+    metalness: 0.35,
+  });
+  const micTexture = createMicMeshTexture();
+  const micBodyMat = new THREE.MeshStandardMaterial({
+    color: 0x9cf5ff,
+    map: micTexture ?? undefined,
+    emissive: 0x1cc8eb,
+    emissiveMap: micTexture ?? undefined,
+    emissiveIntensity: 0.9,
+    roughness: 0.36,
+    metalness: 0.24,
+  });
+
+  const micCap = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.25, 0.16, 28), micCapMat);
+  micCap.position.set(0, 0.36, 0);
+  micGroup.add(micCap);
+
+  const micBody = new THREE.Mesh(new THREE.CylinderGeometry(0.24, 0.22, 0.64, 28), micBodyMat);
+  micBody.position.set(0, -0.02, 0);
+  micGroup.add(micBody);
+
+  const micBase = new THREE.Mesh(new THREE.CylinderGeometry(0.23, 0.2, 0.12, 28), micCapMat);
+  micBase.position.set(0, -0.38, 0);
+  micGroup.add(micBase);
+  root.add(micGroup);
 
   const haloMaterial = new THREE.MeshStandardMaterial({
     color: 0x8bff2a,
@@ -373,8 +902,8 @@ export function mountFeedenYodaScene(
     roughness: 0.22,
     metalness: 0.18,
   });
-  const haloRing = new THREE.Mesh(new THREE.TorusGeometry(1.74, 0.064, 20, 72), haloMaterial);
-  haloRing.position.set(0, 0.1, -0.48);
+  const haloRing = new THREE.Mesh(new THREE.TorusGeometry(1.76, 0.06, 20, 72), haloMaterial);
+  haloRing.position.set(0, 0.16, -0.82);
   root.add(haloRing);
 
   let targetProgress = clamp01(initialProgress);
@@ -406,34 +935,43 @@ export function mountFeedenYodaScene(
   function applyMorph(progress: number, timeSec: number) {
     const state = computeMorphParameters(progress);
 
-    const idleYaw = prefersReducedMotion ? 0 : Math.sin(timeSec * 0.7) * 0.12;
-    const idleFloat = prefersReducedMotion ? 0 : Math.sin(timeSec * 1.4) * 0.05;
+    const idleYaw = prefersReducedMotion ? 0 : Math.sin(timeSec * 0.65) * 0.08;
+    const idleFloat = prefersReducedMotion ? 0 : Math.sin(timeSec * 1.35) * 0.04;
+    const streamerTurnOffset = (1 - state.headMorph) * -0.14;
 
-    root.rotation.y = state.rotationY + idleYaw + pointerX * 0.32;
-    root.rotation.x = pointerY * 0.2 + Math.sin(state.progress * Math.PI) * 0.08;
+    root.rotation.y = state.rotationY + streamerTurnOffset + idleYaw + pointerX * 0.28;
+    root.rotation.x = pointerY * 0.16 + Math.sin(state.progress * Math.PI) * 0.06;
     root.position.y = idleFloat;
 
-    workingColor.copy(streamerSkinColor).lerp(yodaObsidianColor, state.eyeGlow);
+    if (headMesh.morphTargetInfluences) {
+      headMesh.morphTargetInfluences[0] = state.headMorph;
+    }
+
+    workingColor.copy(neutralWhite).lerp(yodaHeadTint, state.eyeGlow);
     headMaterial.color.copy(workingColor);
-    headMaterial.emissive.setHex(0x112b0b);
-    headMaterial.emissiveIntensity = state.eyeGlow * 0.55;
+    headMaterial.emissive.setHex(0x163c14);
+    headMaterial.emissiveIntensity = state.eyeGlow * 0.65;
+    headMaterial.roughness = 0.62 - state.eyeGlow * 0.2;
 
-    headMesh.scale.set(
-      1 + state.earScale * 0.07,
-      1.05 - state.earScale * 0.14,
-      0.96 + state.earScale * 0.04,
-    );
+    workingColor.copy(skinSolidColor).lerp(yodaObsidianColor, state.eyeGlow);
+    skinSolidMat.color.copy(workingColor);
 
-    const hpScale = Math.max(0.001, state.headphoneScale);
-    headphoneGroup.visible = state.headphoneScale > 0.02;
-    headphoneGroup.scale.setScalar(hpScale);
-    headphoneGroup.position.y = (1 - state.headphoneScale) * 0.32;
+    const cloakFade = smoothstep(0.32, 0.72, progress);
+    cloakShellMaterial.opacity = cloakFade;
+    cloakShellMesh.visible = cloakFade > 0.02;
+    torsoMesh.visible = cloakFade < 0.98;
 
-    const hairScale = Math.max(0.001, 1 - smoothstep(0.1, 0.56, progress));
-    hairGroup.visible = hairScale > 0.02;
-    hairGroup.scale.setScalar(hairScale);
+    const hairVisible = state.hairScale > 0.02;
+    hairGroup.visible = hairVisible;
+    hairGroup.scale.setScalar(0.985 + state.hairScale * 0.015);
+    hairMaterial.opacity = state.hairScale;
+    hairMaterial.depthWrite = state.hairScale > 0.5;
 
-    const faceScale = Math.max(0.001, 1 - smoothstep(0.14, 0.52, progress));
+    const humanEarS = Math.max(0.001, 1 - smoothstep(0.24, 0.56, progress));
+    humanEarsGroup.visible = humanEarS > 0.02;
+    humanEarsGroup.scale.setScalar(humanEarS);
+
+    const faceScale = Math.max(0.001, 1 - smoothstep(0.22, 0.56, progress));
     streamerFaceGroup.visible = faceScale > 0.02;
     streamerFaceGroup.scale.setScalar(faceScale);
 
@@ -443,23 +981,33 @@ export function mountFeedenYodaScene(
     mascotEyeMat.emissiveIntensity = 0.65 + state.eyeGlow * 1.3;
 
     const earS = Math.max(0.001, state.earScale);
-    earsGroup.visible = state.earScale > 0.02;
+    yodaEarsGroup.visible = state.earScale > 0.02;
     leftEarPivot.scale.set(-earS, earS, earS);
     rightEarPivot.scale.set(earS, earS, earS);
-    leftEarPivot.rotation.z = -0.32 + state.earScale * 0.36;
-    rightEarPivot.rotation.z = 0.32 - state.earScale * 0.36;
+    leftEarPivot.rotation.z = -0.28 + state.earScale * 0.32;
+    rightEarPivot.rotation.z = 0.28 - state.earScale * 0.32;
+
+    const mScale = Math.max(0.001, state.micScale);
+    micGroup.visible = state.micScale > 0.02;
+    micGroup.scale.setScalar(mScale);
+    micGroup.position.y = -1.18 - (1 - state.micScale) * 0.75;
 
     const rScale = Math.max(0.001, state.ringScale);
     haloRing.visible = state.ringScale > 0.02;
     haloRing.scale.setScalar(rScale);
-    haloRing.rotation.x = (1 - state.ringScale) * 1.2;
 
-    collarMesh.position.y = -0.72 + state.cloakLift * 0.12;
-    collarMesh.scale.setScalar(1 + state.cloakLift * 0.05);
+    const collarScale = Math.max(0.001, state.cloakLift);
+    cloakCollar.visible = state.cloakLift > 0.03;
+    cloakCollar.scale.setScalar(collarScale);
+    cloakCollar.position.y = -0.88 + state.cloakLift * 0.24;
+
+    crewNeckRim.visible = state.cloakLift < 0.5;
     badgeMaterial.opacity = state.ringScale;
     badgeMesh.visible = state.ringScale > 0.05;
 
-    rimLight.intensity = 2.4 + state.eyeGlow * 5.0;
+    limeRimLight.intensity = 1.4 + state.eyeGlow * 5.2;
+    coolHairRim.intensity = 1.55 - state.eyeGlow * 0.9;
+    yodaFrontFill.intensity = state.eyeGlow * 2.4;
   }
 
   resize();
@@ -498,16 +1046,27 @@ export function mountFeedenYodaScene(
       disposed = true;
       cancelAnimationFrame(frameId);
       resizeObserver?.disconnect();
+      const disposedGeos = new Set<THREE.BufferGeometry>();
+      const disposedMats = new Set<THREE.Material>();
       scene.traverse((obj) => {
         if (obj instanceof THREE.Mesh) {
-          obj.geometry.dispose();
-          if (Array.isArray(obj.material)) {
-            obj.material.forEach((mat) => mat.dispose());
-          } else {
-            obj.material.dispose();
+          if (!disposedGeos.has(obj.geometry)) {
+            disposedGeos.add(obj.geometry);
+            obj.geometry.dispose();
+          }
+          const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+          for (const mat of mats) {
+            if (!disposedMats.has(mat)) {
+              disposedMats.add(mat);
+              mat.dispose();
+            }
           }
         }
       });
+      faceTexture?.dispose();
+      eyeTexture?.dispose();
+      shirtTexture?.dispose();
+      micTexture?.dispose();
       badgeTexture?.dispose();
       renderer.dispose();
     },
