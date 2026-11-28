@@ -8,8 +8,9 @@ import {
   KICK_EMBED_URL,
   KICK_URL,
   OFFICIAL_SOCIALS,
-  STREAM_LINEUP,
   X_PROFILE_URL,
+  YOUTUBE_CHANNEL_URL,
+  YOUTUBE_VIDEOS,
 } from "./feeden";
 
 describe("feeden data integrity", () => {
@@ -17,6 +18,7 @@ describe("feeden data integrity", () => {
     expect(CHANNEL_SLUG).toBe("feeden");
     expect(KICK_URL).toBe("https://kick.com/feeden");
     expect(KICK_EMBED_URL).toContain("player.kick.com/feeden");
+    expect(YOUTUBE_CHANNEL_URL).toBe("https://www.youtube.com/@Feeden_");
     expect(DISCORD_INVITE_URL).toBe("https://discord.gg/jrHe634FU");
     expect(X_PROFILE_URL).toBe("https://x.com/Feeden_");
   });
@@ -36,11 +38,13 @@ describe("feeden data integrity", () => {
     }
   });
 
-  it("includes bilingual stream rotation items with spatial coordinates", () => {
-    expect(STREAM_LINEUP.length).toBe(7);
-    for (const item of STREAM_LINEUP) {
-      expect(item.label.es.length).toBeGreaterThan(0);
-      expect(item.label.en.length).toBeGreaterThan(0);
+  it("includes verified YouTube videos with spatial callout coordinates", () => {
+    expect(YOUTUBE_VIDEOS.length).toBe(7);
+    for (const item of YOUTUBE_VIDEOS) {
+      expect(item.url.startsWith("https://www.youtube.com/watch?v=")).toBe(true);
+      expect(item.title.length).toBeGreaterThan(0);
+      expect(item.tag.es.length).toBeGreaterThan(0);
+      expect(item.tag.en.length).toBeGreaterThan(0);
       expect(item.x).toBeGreaterThan(0);
       expect(item.x).toBeLessThan(100);
       expect(item.y).toBeGreaterThan(0);

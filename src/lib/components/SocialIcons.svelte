@@ -7,6 +7,7 @@
     | "x"
     | "discord"
     | "arrow-up-right"
+    | "arrow-right"
     | "copy"
     | "check"
     | "menu"
@@ -110,6 +111,20 @@
     class={className}
   >
     <path d="M7 17 17 7M9 7h8v8" />
+  </svg>
+{:else if name === "arrow-right"}
+  <svg
+    width={size}
+    height={size}
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="square"
+    aria-hidden="true"
+    class={className}
+  >
+    <path d="M5 12h13M13 6l6 6-6 6" />
   </svg>
 {:else if name === "copy"}
   <svg

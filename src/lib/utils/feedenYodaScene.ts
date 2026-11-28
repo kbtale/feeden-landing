@@ -55,54 +55,54 @@ function gauss3(
 }
 
 function sculptFeedenHeadPoint(nx: number, ny: number, nz: number): [number, number, number] {
-  let x = nx * 0.92;
+  const lowerTaper = smoothstep(-0.08, -0.92, ny) * 0.14;
+  let x = nx * (0.81 - lowerTaper);
   let y = ny * 1.04;
-  let z = nz * 0.94;
+  let z = nz * 0.89;
 
   const templeFlatten =
     gauss3(Math.abs(nx) - 0.85, ny - 0.16, nz - 0.28, 0.24, 0.36, 0.42);
-  x -= Math.sign(nx) * templeFlatten * 0.06;
+  x -= Math.sign(nx) * templeFlatten * 0.05;
 
-  const cheekFullness =
-    gauss3(Math.abs(nx) - 0.52, ny + 0.14, nz - 0.62, 0.32, 0.28, 0.4);
-  x += Math.sign(nx) * cheekFullness * 0.095;
-  z += cheekFullness * 0.06;
+  const cheekbone =
+    gauss3(Math.abs(nx) - 0.56, ny + 0.04, nz - 0.62, 0.28, 0.22, 0.36);
+  x += Math.sign(nx) * cheekbone * 0.032;
+  z += cheekbone * 0.032;
 
-  const jawAngle =
-    gauss3(Math.abs(nx) - 0.46, ny + 0.48, nz - 0.36, 0.3, 0.24, 0.42);
-  x += Math.sign(nx) * jawAngle * 0.065;
-  y -= jawAngle * 0.03;
+  const jawDefine =
+    gauss3(Math.abs(nx) - 0.46, ny + 0.46, nz - 0.34, 0.26, 0.22, 0.38);
+  x += Math.sign(nx) * jawDefine * 0.022;
 
-  const chinShape = gauss3(nx, ny + 0.74, nz - 0.54, 0.24, 0.22, 0.32);
+  const chinShape = gauss3(nx, ny + 0.76, nz - 0.54, 0.22, 0.22, 0.32);
   z += chinShape * 0.105;
-  y -= chinShape * 0.075;
+  y -= chinShape * 0.085;
 
   const browTargetY = 0.23 + 0.06 * Math.min(1, Math.abs(nx) * 2.1);
-  const browRidge = gauss3(nx, ny - browTargetY, nz - 0.86, 0.48, 0.095, 0.26);
-  z += browRidge * 0.078;
+  const browRidge = gauss3(nx, ny - browTargetY, nz - 0.86, 0.46, 0.095, 0.26);
+  z += browRidge * 0.075;
 
   const glabellaDip = gauss3(nx, ny - 0.2, nz - 0.92, 0.075, 0.075, 0.18);
-  z -= glabellaDip * 0.032;
+  z -= glabellaDip * 0.03;
 
   const eyeSocket =
-    gauss3(nx - 0.3, ny - 0.11, nz - 0.88, 0.19, 0.135, 0.25) +
-    gauss3(nx + 0.3, ny - 0.11, nz - 0.88, 0.19, 0.135, 0.25);
-  z -= eyeSocket * 0.098;
+    gauss3(nx - 0.3, ny - 0.11, nz - 0.88, 0.185, 0.13, 0.24) +
+    gauss3(nx + 0.3, ny - 0.11, nz - 0.88, 0.185, 0.13, 0.24);
+  z -= eyeSocket * 0.092;
 
-  const noseBridge = gauss3(nx, ny - 0.01, nz - 0.96, 0.1, 0.21, 0.24);
-  const noseTip = gauss3(nx, ny + 0.13, nz - 0.96, 0.105, 0.09, 0.22);
+  const noseBridge = gauss3(nx, ny - 0.01, nz - 0.96, 0.095, 0.21, 0.24);
+  const noseTip = gauss3(nx, ny + 0.13, nz - 0.96, 0.095, 0.088, 0.22);
   const nostrils =
-    gauss3(nx - 0.11, ny + 0.16, nz - 0.92, 0.07, 0.055, 0.18) +
-    gauss3(nx + 0.11, ny + 0.16, nz - 0.92, 0.07, 0.055, 0.18);
-  z += noseBridge * 0.09 + noseTip * 0.16 + nostrils * 0.055;
-  y -= noseTip * 0.016;
+    gauss3(nx - 0.1, ny + 0.16, nz - 0.92, 0.065, 0.052, 0.18) +
+    gauss3(nx + 0.1, ny + 0.16, nz - 0.92, 0.065, 0.052, 0.18);
+  z += noseBridge * 0.085 + noseTip * 0.15 + nostrils * 0.048;
+  y -= noseTip * 0.015;
 
-  const upperLip = gauss3(nx, ny + 0.35, nz - 0.88, 0.185, 0.052, 0.18);
-  const mouthLineY = -0.4 - 0.016 * Math.min(1, (nx / 0.22) * (nx / 0.22));
-  const mouthCrease = gauss3(nx, ny - mouthLineY, nz - 0.88, 0.195, 0.026, 0.17);
-  const lowerLip = gauss3(nx, ny + 0.44, nz - 0.86, 0.16, 0.056, 0.18);
-  const chinFold = gauss3(nx, ny + 0.56, nz - 0.82, 0.17, 0.055, 0.18);
-  z += upperLip * 0.055 - mouthCrease * 0.036 + lowerLip * 0.062 - chinFold * 0.038;
+  const upperLip = gauss3(nx, ny + 0.35, nz - 0.88, 0.175, 0.05, 0.18);
+  const mouthLineY = -0.4 - 0.014 * Math.min(1, (nx / 0.21) * (nx / 0.21));
+  const mouthCrease = gauss3(nx, ny - mouthLineY, nz - 0.88, 0.185, 0.025, 0.17);
+  const lowerLip = gauss3(nx, ny + 0.44, nz - 0.86, 0.15, 0.054, 0.18);
+  const chinFold = gauss3(nx, ny + 0.56, nz - 0.82, 0.16, 0.054, 0.18);
+  z += upperLip * 0.052 - mouthCrease * 0.034 + lowerLip * 0.058 - chinFold * 0.036;
 
   return [x, y, z];
 }
@@ -173,35 +173,35 @@ function createBowlFringeHairGeometry(): THREE.BufferGeometry {
     const sideWeight = 1 - Math.max(frontWeight, backWeight);
 
     const fringeNotch =
-      Math.sin(az * 13 + 0.4) * 0.022 + Math.cos(az * 23 - 0.8) * 0.014;
-    const frontEdgeY = 0.265 - nx * 0.065 + fringeNotch;
-    const sideEdgeY = 0.19;
-    const backEdgeY = -0.36;
+      Math.sin(az * 13 + 0.4) * 0.02 + Math.cos(az * 23 - 0.8) * 0.012;
+    const frontEdgeY = 0.275 - nx * 0.055 + fringeNotch;
+    const sideEdgeY = 0.2;
+    const backEdgeY = -0.34;
     const edgeY =
       frontWeight * frontEdgeY + sideWeight * sideEdgeY + backWeight * backEdgeY;
 
-    const crownBoost = 1.07 + smoothstep(0.15, 0.95, ny) * 0.09;
-    const sideFull = 1.035 + sideWeight * smoothstep(0.1, 0.75, ny) * 0.06;
-    const frontFull = 1.045 + frontWeight * smoothstep(0.15, 0.7, ny) * 0.075;
-    const backFull = 1.055 + backWeight * smoothstep(-0.3, 0.6, ny) * 0.05;
+    const crownBoost = 1.07 + smoothstep(0.15, 0.95, ny) * 0.085;
+    const sideFull = 0.91 + sideWeight * smoothstep(0.1, 0.75, ny) * 0.05;
+    const frontFull = 0.985 + frontWeight * smoothstep(0.15, 0.7, ny) * 0.065;
+    const backFull = 0.995 + backWeight * smoothstep(-0.3, 0.6, ny) * 0.045;
 
-    let y = ny * 1.13 + 0.04;
+    let y = ny * 1.12 + 0.04;
     if (y < edgeY) {
       y = edgeY;
     }
 
     const nearEdge = smoothstep(0.2, 0, y - edgeY);
     const strandRipple =
-      (Math.sin(az * 28 + ny * 2.4) * 0.011 + Math.sin(az * 46) * 0.006) *
+      (Math.sin(az * 28 + ny * 2.4) * 0.01 + Math.sin(az * 46) * 0.005) *
       (1 - smoothstep(0.7, 0.98, ny));
 
-    const rx = (sideWeight * sideFull + (1 - sideWeight) * 1.02) * (1 - nearEdge * 0.045);
+    const rx = (sideWeight * sideFull + (1 - sideWeight) * 0.9) * (1 - nearEdge * 0.04);
     const rz =
-      (frontWeight * frontFull + backWeight * backFull + sideWeight * 1.03) *
-      (1 - nearEdge * 0.035);
+      (frontWeight * frontFull + backWeight * backFull + sideWeight * 0.97) *
+      (1 - nearEdge * 0.032);
 
     const x = nx * rx * (1 + strandRipple);
-    const z = nz * rz * (1 + strandRipple) + frontWeight * nearEdge * 0.03;
+    const z = nz * rz * (1 + strandRipple) + frontWeight * nearEdge * 0.028;
 
     if (ny > 0.7) {
       y = ny * crownBoost + 0.05;
@@ -236,9 +236,9 @@ function createSculptedTorsoGeometry(): THREE.BufferGeometry {
     const chestFull = gauss3(nx, ny - 0.08, nz - 0.75, 0.62, 0.42, 0.42);
     const sleeveDrop = smoothstep(0.35, -0.5, ny) * smoothstep(0.68, 0.98, Math.abs(nx));
 
-    const rx = 1.48 * (1 - neckTaper * 0.68) + shoulderBand * 0.12 - sleeveDrop * 0.14;
+    const rx = 1.44 * (1 - neckTaper * 0.7) + shoulderBand * 0.11 - sleeveDrop * 0.14;
     const ry = 0.86;
-    const rz = 0.66 * (1 - neckTaper * 0.38) + chestFull * 0.12;
+    const rz = 0.64 * (1 - neckTaper * 0.4) + chestFull * 0.11;
 
     const x = nx * rx;
     let y = ny * ry - 1.18;
@@ -293,60 +293,60 @@ function createFeedenFaceTexture(): THREE.CanvasTexture | null {
   ctx.fillRect(cx - 170, height * 0.24, 340, height * 0.16);
 
   for (const dir of [-1, 1]) {
-    const ex = cx + dir * 51;
+    const ex = cx + dir * 48;
     const ey = height * 0.46;
-    const socket = ctx.createRadialGradient(ex, ey, 6, ex, ey, 42);
+    const socket = ctx.createRadialGradient(ex, ey, 6, ex, ey, 40);
     socket.addColorStop(0, "rgba(74, 42, 32, 0.32)");
     socket.addColorStop(1, "rgba(74, 42, 32, 0)");
     ctx.fillStyle = socket;
     ctx.beginPath();
-    ctx.ellipse(ex, ey, 40, 24, 0, 0, Math.PI * 2);
+    ctx.ellipse(ex, ey, 38, 23, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    const cheekX = cx + dir * 82;
-    const cheekY = height * 0.57;
-    const blush = ctx.createRadialGradient(cheekX, cheekY, 4, cheekX, cheekY, 54);
-    blush.addColorStop(0, "rgba(184, 102, 82, 0.22)");
-    blush.addColorStop(1, "rgba(184, 102, 82, 0)");
-    ctx.fillStyle = blush;
+    const jawShadowX = cx + dir * 92;
+    const jawShadowY = height * 0.62;
+    const jawShade = ctx.createRadialGradient(jawShadowX, jawShadowY, 4, jawShadowX, jawShadowY, 48);
+    jawShade.addColorStop(0, "rgba(122, 74, 56, 0.18)");
+    jawShade.addColorStop(1, "rgba(122, 74, 56, 0)");
+    ctx.fillStyle = jawShade;
     ctx.beginPath();
-    ctx.arc(cheekX, cheekY, 54, 0, Math.PI * 2);
+    ctx.arc(jawShadowX, jawShadowY, 48, 0, Math.PI * 2);
     ctx.fill();
   }
 
-  const noseShadow = ctx.createRadialGradient(cx, height * 0.565, 4, cx, height * 0.565, 28);
-  noseShadow.addColorStop(0, "rgba(96, 56, 44, 0.34)");
+  const noseShadow = ctx.createRadialGradient(cx, height * 0.565, 4, cx, height * 0.565, 26);
+  noseShadow.addColorStop(0, "rgba(96, 56, 44, 0.32)");
   noseShadow.addColorStop(1, "rgba(96, 56, 44, 0)");
   ctx.fillStyle = noseShadow;
   ctx.beginPath();
-  ctx.ellipse(cx, height * 0.565, 25, 13, 0, 0, Math.PI * 2);
+  ctx.ellipse(cx, height * 0.565, 23, 12, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  ctx.fillStyle = "rgba(76, 44, 34, 0.42)";
+  ctx.fillStyle = "rgba(76, 44, 34, 0.4)";
   ctx.beginPath();
-  ctx.ellipse(cx - 10, height * 0.564, 5, 2.6, 0.15, 0, Math.PI * 2);
-  ctx.ellipse(cx + 10, height * 0.564, 5, 2.6, -0.15, 0, Math.PI * 2);
+  ctx.ellipse(cx - 9, height * 0.564, 4.6, 2.4, 0.15, 0, Math.PI * 2);
+  ctx.ellipse(cx + 9, height * 0.564, 4.6, 2.4, -0.15, 0, Math.PI * 2);
   ctx.fill();
 
   ctx.fillStyle = "rgba(154, 96, 84, 0.54)";
   ctx.beginPath();
-  ctx.ellipse(cx, height * 0.632, 34, 8.5, 0, 0, Math.PI * 2);
+  ctx.ellipse(cx, height * 0.632, 32, 8, 0, 0, Math.PI * 2);
   ctx.fill();
 
   ctx.strokeStyle = "rgba(88, 48, 40, 0.78)";
-  ctx.lineWidth = 2.8;
+  ctx.lineWidth = 2.6;
   ctx.lineCap = "round";
   ctx.beginPath();
-  ctx.moveTo(cx - 33, height * 0.634);
-  ctx.quadraticCurveTo(cx, height * 0.629, cx + 33, height * 0.634);
+  ctx.moveTo(cx - 31, height * 0.634);
+  ctx.quadraticCurveTo(cx, height * 0.629, cx + 31, height * 0.634);
   ctx.stroke();
 
-  const lowerLipHighlight = ctx.createRadialGradient(cx, height * 0.642, 1, cx, height * 0.642, 18);
+  const lowerLipHighlight = ctx.createRadialGradient(cx, height * 0.642, 1, cx, height * 0.642, 16);
   lowerLipHighlight.addColorStop(0, "rgba(222, 174, 156, 0.25)");
   lowerLipHighlight.addColorStop(1, "rgba(222, 174, 156, 0)");
   ctx.fillStyle = lowerLipHighlight;
   ctx.beginPath();
-  ctx.ellipse(cx, height * 0.642, 18, 5, 0, 0, Math.PI * 2);
+  ctx.ellipse(cx, height * 0.642, 16, 4.6, 0, 0, Math.PI * 2);
   ctx.fill();
 
   const texture = new THREE.CanvasTexture(canvas);
@@ -592,6 +592,7 @@ export interface FeedenYodaController {
 export function mountFeedenYodaScene(
   canvas: HTMLCanvasElement,
   initialProgress = 0,
+  onReady?: () => void,
 ): FeedenYodaController | null {
   let renderer: THREE.WebGLRenderer;
   try {
@@ -690,16 +691,16 @@ export function mountFeedenYodaScene(
   });
 
   for (const side of [-1, 1]) {
-    const earOuter = new THREE.Mesh(new THREE.SphereGeometry(0.185, 20, 18), skinSolidMat);
-    earOuter.scale.set(0.4, 1.04, 0.72);
-    earOuter.position.set(side * 0.92, -0.01, -0.04);
+    const earOuter = new THREE.Mesh(new THREE.SphereGeometry(0.175, 20, 18), skinSolidMat);
+    earOuter.scale.set(0.38, 1.02, 0.7);
+    earOuter.position.set(side * 0.81, -0.01, -0.04);
     earOuter.rotation.y = side * -0.22;
     earOuter.rotation.z = side * -0.1;
     humanEarsGroup.add(earOuter);
 
-    const earInner = new THREE.Mesh(new THREE.SphereGeometry(0.105, 14, 14), earInnerShadowMat);
-    earInner.scale.set(0.32, 0.82, 0.54);
-    earInner.position.set(side * 0.94, -0.02, -0.01);
+    const earInner = new THREE.Mesh(new THREE.SphereGeometry(0.098, 14, 14), earInnerShadowMat);
+    earInner.scale.set(0.3, 0.8, 0.52);
+    earInner.position.set(side * 0.825, -0.02, -0.01);
     humanEarsGroup.add(earInner);
   }
   headAnchor.add(humanEarsGroup);
@@ -723,24 +724,24 @@ export function mountFeedenYodaScene(
 
   for (const side of [-1, 1]) {
     const eyeball = new THREE.Mesh(
-      new THREE.SphereGeometry(0.118, 24, 24, -Math.PI / 2, Math.PI * 2),
+      new THREE.SphereGeometry(0.114, 24, 24, -Math.PI / 2, Math.PI * 2),
       eyeBallMat,
     );
-    eyeball.position.set(side * 0.295, 0.115, 0.835);
+    eyeball.position.set(side * 0.265, 0.115, 0.79);
     eyeball.rotation.y = -0.05;
     streamerFaceGroup.add(eyeball);
 
     const upperLid = new THREE.Mesh(
-      new THREE.SphereGeometry(0.129, 22, 16, -Math.PI / 2, Math.PI * 2, 0, Math.PI * 0.37),
+      new THREE.SphereGeometry(0.124, 22, 16, -Math.PI / 2, Math.PI * 2, 0, Math.PI * 0.37),
       eyelidMat,
     );
-    upperLid.position.set(side * 0.295, 0.128, 0.835);
+    upperLid.position.set(side * 0.265, 0.128, 0.79);
     upperLid.rotation.x = 0.2;
     upperLid.rotation.z = side * -0.14;
     streamerFaceGroup.add(upperLid);
 
-    const brow = new THREE.Mesh(new THREE.CapsuleGeometry(0.032, 0.27, 6, 12), browMat);
-    brow.position.set(side * 0.3, 0.245, 0.895);
+    const brow = new THREE.Mesh(new THREE.CapsuleGeometry(0.03, 0.25, 6, 12), browMat);
+    brow.position.set(side * 0.27, 0.245, 0.855);
     brow.rotation.z = Math.PI / 2 + side * -0.19;
     brow.rotation.y = side * -0.24;
     streamerFaceGroup.add(brow);
@@ -804,7 +805,7 @@ export function mountFeedenYodaScene(
   yodaEarsGroup.add(leftEarPivot, rightEarPivot);
   headAnchor.add(yodaEarsGroup);
 
-  const neckMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.36, 0.42, 0.56, 32), skinSolidMat);
+  const neckMesh = new THREE.Mesh(new THREE.CylinderGeometry(0.33, 0.39, 0.56, 32), skinSolidMat);
   neckMesh.position.set(0, -0.5, -0.07);
   neckMesh.rotation.x = 0.08;
   root.add(neckMesh);
@@ -835,7 +836,7 @@ export function mountFeedenYodaScene(
     color: 0x101d35,
     roughness: 0.78,
   });
-  const crewNeckRim = new THREE.Mesh(new THREE.TorusGeometry(0.46, 0.06, 14, 36), crewNeckMat);
+  const crewNeckRim = new THREE.Mesh(new THREE.TorusGeometry(0.43, 0.056, 14, 36), crewNeckMat);
   crewNeckRim.rotation.x = Math.PI * 0.48;
   crewNeckRim.position.set(0, -0.66, -0.04);
   root.add(crewNeckRim);
@@ -863,7 +864,7 @@ export function mountFeedenYodaScene(
   root.add(badgeMesh);
 
   const micGroup = new THREE.Group();
-  micGroup.position.set(-1.12, -1.18, 0.94);
+  micGroup.position.set(-1.08, -1.18, 0.92);
   micGroup.rotation.set(0.08, 0.25, -0.14);
 
   const micCapMat = new THREE.MeshStandardMaterial({
@@ -912,6 +913,7 @@ export function mountFeedenYodaScene(
   let pointerY = 0;
   let frameId = 0;
   let disposed = false;
+  let readyNotified = false;
 
   const prefersReducedMotion =
     typeof window !== "undefined" &&
@@ -935,13 +937,20 @@ export function mountFeedenYodaScene(
   function applyMorph(progress: number, timeSec: number) {
     const state = computeMorphParameters(progress);
 
-    const idleYaw = prefersReducedMotion ? 0 : Math.sin(timeSec * 0.65) * 0.08;
-    const idleFloat = prefersReducedMotion ? 0 : Math.sin(timeSec * 1.35) * 0.04;
-    const streamerTurnOffset = (1 - state.headMorph) * -0.14;
+    const introRaw = prefersReducedMotion ? 1 : clamp01(timeSec / 1.05);
+    const introEase = 1 - Math.pow(1 - introRaw, 3);
+    const introYaw = (1 - introEase) * -0.78;
+    const introLift = (1 - introEase) * -0.32;
+    const introScale = 0.86 + introEase * 0.14;
 
-    root.rotation.y = state.rotationY + streamerTurnOffset + idleYaw + pointerX * 0.28;
+    const idleYaw = prefersReducedMotion ? 0 : Math.sin(timeSec * 0.65) * 0.08 * introEase;
+    const idleFloat = prefersReducedMotion ? 0 : Math.sin(timeSec * 1.35) * 0.04 * introEase;
+    const streamerTurnOffset = (1 - state.headMorph) * -0.12;
+
+    root.rotation.y = state.rotationY + streamerTurnOffset + introYaw + idleYaw + pointerX * 0.28;
     root.rotation.x = pointerY * 0.16 + Math.sin(state.progress * Math.PI) * 0.06;
-    root.position.y = idleFloat;
+    root.position.y = idleFloat + introLift;
+    root.scale.setScalar(introScale);
 
     if (headMesh.morphTargetInfluences) {
       headMesh.morphTargetInfluences[0] = state.headMorph;
@@ -1005,7 +1014,9 @@ export function mountFeedenYodaScene(
     badgeMaterial.opacity = state.ringScale;
     badgeMesh.visible = state.ringScale > 0.05;
 
-    limeRimLight.intensity = 1.4 + state.eyeGlow * 5.2;
+    const introLightBoost = 0.6 + introEase * 0.4;
+    keyLight.intensity = 1.95 * introLightBoost;
+    limeRimLight.intensity = (1.4 + (1 - introEase) * 2.8) + state.eyeGlow * 5.2;
     coolHairRim.intensity = 1.55 - state.eyeGlow * 0.9;
     yodaFrontFill.intensity = state.eyeGlow * 2.4;
   }
@@ -1027,8 +1038,12 @@ export function mountFeedenYodaScene(
       currentProgress = targetProgress;
     }
 
-    applyMorph(currentProgress, (now - startMs) * 0.001);
+    applyMorph(currentProgress, Math.max(0, (now - startMs) * 0.001));
     renderer.render(scene, camera);
+    if (!readyNotified) {
+      readyNotified = true;
+      onReady?.();
+    }
     frameId = requestAnimationFrame(renderFrame);
   }
 

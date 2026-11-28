@@ -2,8 +2,9 @@
   import { Tabs, TabsList, TabsPanel, TabsTab } from "@ui-sdk/svelte/tabs";
   import {
     KICK_URL,
-    STREAM_LINEUP,
-    type StreamCategory,
+    YOUTUBE_CHANNEL_URL,
+    YOUTUBE_VIDEOS,
+    type VideoCategory,
   } from "../data/feeden";
   import { getI18n } from "../i18n/store.svelte";
   import { animateCountUp } from "../utils/countUp";
@@ -19,7 +20,7 @@
   let { status, onCopyChannel }: Props = $props();
   const i18n = getI18n();
 
-  const categories: readonly StreamCategory[] = ["all", "gaming", "futbol", "chat"];
+  const categories: readonly VideoCategory[] = ["all", "challenges", "gaming", "reactions"];
 
   let corridorEl = $state<HTMLDivElement | null>(null);
   let stageEl = $state<HTMLElement | null>(null);
@@ -27,8 +28,8 @@
   let scrollProgress = $state(0);
   let mobileProgress = $state(0);
   let manualOverride = $state<number | null>(null);
-  let activeCategory = $state<StreamCategory>("all");
-  let hoveredCode = $state<string | null>(STREAM_LINEUP[0].code);
+  let activeCategory = $state<VideoCategory>("all");
+  let hoveredCode = $state<string | null>(YOUTUBE_VIDEOS[0].code);
   let displayedViewers = $state(0);
 
   const effectiveProgress = $derived(
@@ -42,10 +43,10 @@
   const fdnModeActive = $derived(effectiveProgress >= 0.78);
   const mobileFdnActive = $derived(mobileEffectiveProgress >= 0.78);
 
-  const filteredLineup = $derived(
+  const filteredVideos = $derived(
     activeCategory === "all"
-      ? STREAM_LINEUP
-      : STREAM_LINEUP.filter((item) => item.category === activeCategory),
+      ? YOUTUBE_VIDEOS
+      : YOUTUBE_VIDEOS.filter((item) => item.category === activeCategory),
   );
 
   $effect(() => {
@@ -121,8 +122,8 @@
   }
 
   function handleCategoryChange(next: string | null) {
-    if (next && categories.includes(next as StreamCategory)) {
-      activeCategory = next as StreamCategory;
+    if (next && categories.includes(next as VideoCategory)) {
+      activeCategory = next as VideoCategory;
     }
   }
 
@@ -186,7 +187,7 @@
         <div class="w-full max-w-[320px]">
           <FeedenYoda3D
             progress={mobileEffectiveProgress}
-            callouts={filteredLineup}
+            callouts={filteredVideos}
             activeCode={hoveredCode}
             showCallouts={false}
           />
@@ -217,11 +218,6 @@
             {i18n.t.morphStage.modeFdn}
           </button>
         </div>
-        <p class="mt-2 font-mono text-[11px] text-muted-ink">
-          {mobileFdnActive
-            ? i18n.t.morphStage.morphCaptionFdn
-            : i18n.t.morphStage.morphCaptionStreamer}
-        </p>
       </div>
 
       <section
@@ -237,7 +233,7 @@
           {i18n.t.morphStage.subheading}
         </p>
 
-        <div class="mt-8 max-w-[460px]">
+        <div class="mt-8 max-w-[490px]">
           <Tabs value={activeCategory} onValueChange={handleCategoryChange}>
             <TabsList
               aria-label={i18n.t.a11y.streamDeskTabs}
@@ -290,27 +286,25 @@
               {#each categories as category (category)}
                 {@const rows =
                   category === "all"
-                    ? STREAM_LINEUP
-                    : STREAM_LINEUP.filter((item) => item.category === category)}
+                    ? YOUTUBE_VIDEOS
+                    : YOUTUBE_VIDEOS.filter((item) => item.category === category)}
                 <TabsPanel value={category}>
                   <ul class="divide-y divide-off-white/8 border-y border-off-white/8">
                     {#each rows as item (item.code)}
                       {@const active = hoveredCode === item.code}
                       <li>
-                        <button
-                          type="button"
+                        <a
+                          href={item.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
                           onmouseenter={() => {
                             hoveredCode = item.code;
                           }}
                           onfocus={() => {
                             hoveredCode = item.code;
                           }}
-                          onclick={() => {
-                            hoveredCode = item.code;
-                            manualOverride = 1;
-                          }}
-                          class="relative flex h-[32px] w-full cursor-pointer items-center justify-between gap-3 px-2 text-left font-mono text-[12px] transition-colors duration-150 {active
-                            ? 'bg-off-white/[0.04] text-off-white'
+                          class="relative flex h-[34px] w-full items-center justify-between gap-2.5 px-2 text-left font-mono text-[12px] transition-colors duration-150 {active
+                            ? 'bg-off-white/[0.05] text-off-white'
                             : 'text-body-ink/75 hover:text-off-white'}"
                         >
                           {#if active}
@@ -319,16 +313,17 @@
                               aria-hidden="true"
                             ></span>
                           {/if}
-                          <span class="w-11 shrink-0 text-[11px] {active ? 'text-fdn-lime' : 'text-doc-dim'}">
+                          <span class="w-10 shrink-0 text-[11px] {active ? 'text-fdn-lime' : 'text-doc-dim'}">
                             {item.code}
                           </span>
                           <span class="min-w-0 flex-1 truncate">
-                            {item.label[i18n.locale]}
+                            {item.title}
                           </span>
-                          <span class="shrink-0 text-[11px] {fdnModeActive ? 'text-fdn-lime' : 'text-muted-ink'}">
-                            {item.tag[i18n.locale]}
+                          <span class="inline-flex shrink-0 items-center gap-1 text-[11px] {active || fdnModeActive ? 'text-fdn-lime' : 'text-muted-ink'}">
+                            <span>{item.tag[i18n.locale]}</span>
+                            <SocialIcons name="arrow-up-right" size={11} />
                           </span>
-                        </button>
+                        </a>
                       </li>
                     {/each}
                   </ul>
@@ -347,24 +342,39 @@
                       {formattedViewers}
                     </p>
                   {:else}
-                    <p class="mt-1 truncate font-mono text-lg leading-none font-medium text-fdn-lime" translate="no">
-                      {i18n.t.morphStage.offlineValue}
-                    </p>
+                    <a
+                      href={YOUTUBE_CHANNEL_URL}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      class="mt-1 inline-flex items-center gap-1.5 font-mono text-lg leading-none font-medium text-fdn-lime transition-colors duration-150 hover:text-off-white"
+                      translate="no"
+                    >
+                      <span>{i18n.t.morphStage.offlineValue}</span>
+                      <SocialIcons name="arrow-up-right" size={14} />
+                    </a>
                   {/if}
                 </div>
 
                 <div class="text-right font-mono text-[11px] leading-snug">
-                  <p class="text-muted-ink">
-                    {filteredLineup.length} {i18n.t.morphStage.lineItemsSuffix}
-                  </p>
-                  <button
-                    type="button"
-                    onclick={onCopyChannel}
-                    class="mt-1 inline-flex cursor-pointer items-center gap-1.5 text-fdn-lime transition-colors duration-150 hover:text-off-white"
+                  <a
+                    href={YOUTUBE_CHANNEL_URL}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-1 text-off-white/80 transition-colors duration-150 hover:text-fdn-lime"
                   >
-                    <span>{i18n.t.morphStage.copyLink}</span>
-                    <SocialIcons name="copy" size={12} />
-                  </button>
+                    <span>{filteredVideos.length} {i18n.t.morphStage.lineItemsSuffix}</span>
+                    <SocialIcons name="arrow-up-right" size={11} />
+                  </a>
+                  <div>
+                    <button
+                      type="button"
+                      onclick={onCopyChannel}
+                      class="mt-1 inline-flex cursor-pointer items-center gap-1.5 text-fdn-lime transition-colors duration-150 hover:text-off-white"
+                    >
+                      <span>{i18n.t.morphStage.copyLink}</span>
+                      <SocialIcons name="copy" size={12} />
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -377,15 +387,10 @@
       <div class="sticky top-[var(--nav-height)] flex h-[calc(100svh-var(--nav-height))] flex-col items-center justify-center">
         <FeedenYoda3D
           progress={effectiveProgress}
-          callouts={filteredLineup}
+          callouts={filteredVideos}
           activeCode={hoveredCode}
           showCallouts={true}
         />
-        <p class="mt-2 font-mono text-[11px] tracking-[0.04em] text-muted-ink">
-          {fdnModeActive
-            ? i18n.t.morphStage.morphCaptionFdn
-            : i18n.t.morphStage.morphCaptionStreamer}
-        </p>
       </div>
     </div>
   </div>

@@ -10,12 +10,14 @@ export interface SocialLink {
   note: Record<Locale, string>;
 }
 
-export type StreamCategory = "all" | "gaming" | "futbol" | "chat";
+export type VideoCategory = "all" | "challenges" | "gaming" | "reactions";
 
-export interface StreamLineupItem {
+export interface YouTubeVideoItem {
   code: string;
-  category: Exclude<StreamCategory, "all">;
-  label: Record<Locale, string>;
+  videoId: string;
+  url: string;
+  category: Exclude<VideoCategory, "all">;
+  title: string;
   tag: Record<Locale, string>;
   x: number;
   y: number;
@@ -39,6 +41,9 @@ export interface CommunityAccount {
 export const CHANNEL_SLUG = "feeden";
 export const KICK_URL = `https://kick.com/${CHANNEL_SLUG}`;
 export const KICK_EMBED_URL = `https://player.kick.com/${CHANNEL_SLUG}?autoplay=false&muted=true`;
+export const YOUTUBE_CHANNEL_URL = "https://www.youtube.com/@Feeden_";
+export const YOUTUBE_CHANNEL_ID = "UCiDN6BPkFD_vZ3GCI-8rphQ";
+export const TIKTOK_URL = "https://www.tiktok.com/@feeden_";
 export const DISCORD_INVITE_URL = "https://discord.gg/jrHe634FU";
 export const X_PROFILE_URL = "https://x.com/Feeden_";
 export const BUILDER_GITHUB_URL = "https://github.com/kbtale";
@@ -50,8 +55,8 @@ export const OFFICIAL_SOCIALS: readonly SocialLink[] = [
     handle: "kick.com/feeden",
     url: KICK_URL,
     note: {
-      es: "Todos los vivos principales, charlas y partidas en directo.",
-      en: "Every live stream, long hangout, and gaming session.",
+      es: "Todos los vivos principales: Just Chatting, reacciones, retos y partidas en directo.",
+      en: "Every live broadcast: Just Chatting, reactions, challenges, and live gaming.",
     },
   },
   {
@@ -68,17 +73,17 @@ export const OFFICIAL_SOCIALS: readonly SocialLink[] = [
     id: "youtube",
     name: "YouTube",
     handle: "@Feeden_",
-    url: "https://www.youtube.com/@Feeden_",
+    url: YOUTUBE_CHANNEL_URL,
     note: {
-      es: "Videos largos, compilados editados y los mejores momentos.",
-      en: "Full videos, edited highlights, and standout broadcast moments.",
+      es: "Videos largos, la serie de 80 dias por la PS5 y GTA VI, retos y reacciones.",
+      en: "Full uploads, the 80-day PS5 and GTA VI challenge series, gaming, and reactions.",
     },
   },
   {
     id: "tiktok",
     name: "TikTok",
     handle: "@feeden_",
-    url: "https://www.tiktok.com/@feeden_",
+    url: TIKTOK_URL,
     note: {
       es: "Recortes cortos, reacciones rapidas y clips virales diarios.",
       en: "Short cuts, quick reactions, and daily viral clips.",
@@ -90,8 +95,8 @@ export const OFFICIAL_SOCIALS: readonly SocialLink[] = [
     handle: "@Feeden_",
     url: X_PROFILE_URL,
     note: {
-      es: "Opiniones de futbol, encuestas y ida y vuelta con el chat.",
-      en: "Football takes, polls, and live back-and-forth with chat.",
+      es: "Avisos de vivo, encuestas y ida y vuelta diario con el chat.",
+      en: "Stream pings, polls, and daily back-and-forth with chat.",
     },
   },
   {
@@ -100,72 +105,86 @@ export const OFFICIAL_SOCIALS: readonly SocialLink[] = [
     handle: "discord.gg/jrHe634FU",
     url: DISCORD_INVITE_URL,
     note: {
-      es: "Servidor oficial de la FDN: alertas de vivo, memes y torneos.",
-      en: "Official FDN server for live alerts, memes, and community events.",
+      es: "Servidor oficial de la FDN: alertas de vivo, memes y desafios con el chat.",
+      en: "Official FDN server for live alerts, memes, and community challenges.",
     },
   },
 ];
 
-export const STREAM_LINEUP: readonly StreamLineupItem[] = [
+export const YOUTUBE_VIDEOS: readonly YouTubeVideoItem[] = [
   {
-    code: "FN-01",
-    category: "gaming",
-    label: { es: "Fortnite en vivo", en: "Live Fortnite" },
-    tag: { es: "PARTIDAS", en: "MATCHES" },
+    code: "YT-01",
+    videoId: "GmKpURtuTog",
+    url: "https://www.youtube.com/watch?v=GmKpURtuTog",
+    category: "challenges",
+    title: "CONSEGUI UNA PLAY 5 PARA JUGAR AL GTA 6",
+    tag: { es: "RETO PS5", en: "PS5 GOAL" },
     x: 11,
     y: 24,
   },
   {
-    code: "FG-02",
-    category: "gaming",
-    label: { es: "Fall Guys & Caos", en: "Fall Guys Chaos" },
-    tag: { es: "SALA FDN", en: "FDN LOBBY" },
+    code: "YT-02",
+    videoId: "kVeqRK5880Q",
+    url: "https://www.youtube.com/watch?v=kVeqRK5880Q",
+    category: "challenges",
+    title: "Mi Primer trabajo en el RETO | 80 DIAS PS5 y GTA 6",
+    tag: { es: "80 DIAS", en: "80 DAYS" },
     x: 87,
     y: 22,
   },
   {
-    code: "CS-03",
-    category: "gaming",
-    label: { es: "Counter-Strike", en: "Counter-Strike" },
-    tag: { es: "RANKEDS", en: "RANKED" },
-    x: 9,
-    y: 62,
-  },
-  {
-    code: "CR-04",
-    category: "gaming",
-    label: { es: "Clash Royale & Roblox", en: "Clash Royale & Roblox" },
-    tag: { es: "DESAFIOS", en: "CHALLENGES" },
-    x: 91,
-    y: 58,
-  },
-  {
-    code: "FB-05",
-    category: "futbol",
-    label: { es: "Debates de futbol", en: "Football debates" },
-    tag: { es: "FUTBOL ARG", en: "FOOTBALL" },
+    code: "YT-03",
+    videoId: "Fck-cG1A68g",
+    url: "https://www.youtube.com/watch?v=Fck-cG1A68g",
+    category: "challenges",
+    title: "¿Puedo comprar una PS5 y GTA 6 en solo 80 DÍAS?",
+    tag: { es: "GTA VI", en: "GTA VI" },
     x: 50,
     y: 8,
   },
   {
-    code: "RX-06",
-    category: "futbol",
-    label: { es: "Reacciones & Virales", en: "Reactions & Viral" },
-    tag: { es: "EN DIRECTO", en: "LIVE REACT" },
+    code: "YT-04",
+    videoId: "zIUBj6gO5kM",
+    url: "https://www.youtube.com/watch?v=zIUBj6gO5kM",
+    category: "gaming",
+    title: "Nada en este juego tenía sentido... hasta el final",
+    tag: { es: "GAMING", en: "GAMING" },
+    x: 9,
+    y: 62,
+  },
+  {
+    code: "YT-05",
+    videoId: "wkz3ympvAMg",
+    url: "https://www.youtube.com/watch?v=wkz3ympvAMg",
+    category: "gaming",
+    title: "Este juego destruye la Tierra en 60 segundos",
+    tag: { es: "DESAFIO", en: "CHALLENGE" },
+    x: 91,
+    y: 58,
+  },
+  {
+    code: "YT-06",
+    videoId: "FijWqsAf3p8",
+    url: "https://www.youtube.com/watch?v=FijWqsAf3p8",
+    category: "reactions",
+    title: "REACCION TRAILER RESIDENT EVIL CODE VERONICA",
+    tag: { es: "REACCION", en: "REACTION" },
     x: 17,
     y: 89,
   },
   {
-    code: "JC-07",
-    category: "chat",
-    label: { es: "Just Chatting sin filtro", en: "Unfiltered Just Chatting" },
-    tag: { es: "COMUNIDAD", en: "HANGOUT" },
+    code: "YT-07",
+    videoId: "JAk4QBJEENw",
+    url: "https://www.youtube.com/watch?v=JAk4QBJEENw",
+    category: "reactions",
+    title: "EL CHAT ME PASA TIKTOKS MUY EXTRAÑOS",
+    tag: { es: "CHAT", en: "CHAT" },
     x: 83,
     y: 89,
   },
 ];
 
-export const STREAM_GAMES = STREAM_LINEUP;
+export const STREAM_GAMES = YOUTUBE_VIDEOS;
 
 export const COMMUNITY_FILTERS: readonly CommunityFilter[] = [
   "all",
@@ -210,8 +229,8 @@ export const COMMUNITY_ACCOUNTS: readonly CommunityAccount[] = [
     badge: "fan",
     url: "https://www.instagram.com/futbolclubfdn",
     description: {
-      es: "Todo el lado futbolero de Feeden: debates, reacciones a partidos y recortes de cancha.",
-      en: "Everything from Feeden's football side: live match reactions, debates, and pitch banter.",
+      es: "Club fan de la comunidad FDN con edits, momentos de reacciones y recortes diarios del stream.",
+      en: "FDN fan club page posting edits, reaction moments, and daily stream cuts.",
     },
   },
   {
@@ -249,8 +268,8 @@ export const COMMUNITY_ACCOUNTS: readonly CommunityAccount[] = [
     badge: "official",
     url: DISCORD_INVITE_URL,
     description: {
-      es: "El punto de encuentro oficial de la comunidad: alertas de vivo, charlas 24/7 y torneos FDN.",
-      en: "Official FDN community server with live stream alerts, 24/7 chat, and community tournaments.",
+      es: "El punto de encuentro oficial de la comunidad: alertas de vivo, charlas 24/7 y retos FDN.",
+      en: "Official FDN community server with live stream alerts, 24/7 chat, and FDN challenges.",
     },
   },
 ];
