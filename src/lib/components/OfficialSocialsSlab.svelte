@@ -100,11 +100,3 @@
     </div>
   </div>
 </section>
-
-<style>
-  @media (hover: hover) and (pointer: fine) {
-    .fdn-paper-row:hover {
-      background-color: rgba(13, 17, 20, 0.04);
-    }
-  }
-</style>

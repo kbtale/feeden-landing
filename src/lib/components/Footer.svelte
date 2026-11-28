@@ -80,11 +80,3 @@
     </div>
   </div>
 </footer>
-
-<style>
-  @media (max-width: 879px) {
-    .fdn-footer {
-      padding-bottom: max(0px, calc(100lvh - 100svh));
-    }
-  }
-</style>

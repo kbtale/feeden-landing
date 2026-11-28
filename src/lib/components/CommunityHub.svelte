@@ -142,15 +142,3 @@
 
   <SubmitChannelDialog bind:open={dialogOpen} {onCopyTemplate} />
 </section>
-
-<style>
-  @media (hover: hover) and (pointer: fine) {
-    .fdn-community-row:hover {
-      background-color: rgba(250, 252, 249, 0.04);
-    }
-
-    .fdn-community-row:hover .fdn-community-cta {
-      color: var(--color-off-white);
-    }
-  }
-</style>

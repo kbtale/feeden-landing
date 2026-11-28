@@ -209,30 +209,3 @@
 
   <div class="fdn-nav-rule" aria-hidden="true"></div>
 </header>
-
-<style>
-  .fdn-navbar[data-top="true"] {
-    background-color: transparent;
-  }
-
-  .fdn-navbar[data-top="false"] {
-    background-color: var(--color-obsidian);
-  }
-
-  .fdn-nav-rule {
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    height: 1px;
-    background-color: color-mix(in oklab, var(--color-off-white) 12%, transparent);
-    transform-origin: left center;
-    animation: nav-rule var(--dur-draw) var(--ease-fdn) both;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    .fdn-nav-link:hover {
-      color: var(--color-fdn-lime);
-    }
-  }
-</style>
