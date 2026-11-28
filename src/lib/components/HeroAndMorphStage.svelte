@@ -25,7 +25,7 @@
   let stageEl = $state<HTMLElement | null>(null);
   let mobileModelEl = $state<HTMLDivElement | null>(null);
   let scrollProgress = $state(0);
-  let mobileProgress = $state(1);
+  let mobileProgress = $state(0);
   let manualOverride = $state<number | null>(null);
   let activeCategory = $state<StreamCategory>("all");
   let hoveredCode = $state<string | null>(STREAM_LINEUP[0].code);
@@ -39,8 +39,8 @@
     manualOverride !== null ? manualOverride : mobileProgress,
   );
 
-  const fdnModeActive = $derived(effectiveProgress >= 0.55);
-  const mobileFdnActive = $derived(mobileEffectiveProgress >= 0.55);
+  const fdnModeActive = $derived(effectiveProgress >= 0.78);
+  const mobileFdnActive = $derived(mobileEffectiveProgress >= 0.78);
 
   const filteredLineup = $derived(
     activeCategory === "all"
@@ -84,7 +84,12 @@
       if (mobileModelEl) {
         const mRect = mobileModelEl.getBoundingClientRect();
         const vh = window.innerHeight || 800;
-        const mRaw = (vh * 0.78 - mRect.top) / Math.max(180, vh * 0.42);
+        const startTop = Math.min(vh * 0.48, mRect.top + window.scrollY);
+        const endTop = vh * 0.08;
+        const mRaw =
+          window.scrollY <= 8
+            ? 0
+            : (startTop - mRect.top) / Math.max(160, startTop - endTop);
         mobileProgress = Math.min(1, Math.max(0, mRaw));
       }
     };
