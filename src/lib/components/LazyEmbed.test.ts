@@ -12,7 +12,7 @@ describe("LazyEmbed component", () => {
       },
     });
 
-    expect(screen.getByText(/Preparando reproductor de Kick/i)).toBeTruthy();
+    expect(screen.getByText(/Cargando reproductor de Kick/i)).toBeTruthy();
     const link = screen.getByRole("link", { name: /Abrir kick\.com\/feeden/i });
     expect(link.getAttribute("href")).toBe("https://kick.com/feeden");
     expect(document.querySelector("iframe")).toBeNull();
@@ -44,7 +44,7 @@ describe("LazyEmbed component", () => {
       },
     });
 
-    expect(screen.getByText(/Kick embed unavailable in this browser/i)).toBeTruthy();
+    expect(screen.getByText(/Watch directly on Kick/i)).toBeTruthy();
     const link = screen.getByRole("link", { name: /Open kick\.com\/feeden/i });
     expect(link.getAttribute("href")).toBe("https://kick.com/feeden");
   });

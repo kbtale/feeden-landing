@@ -4,26 +4,29 @@ import { describe, expect, it, vi } from "vitest";
 import CommunityHubHarness from "../../test/CommunityHubHarness.svelte";
 
 describe("CommunityHub and SubmitChannelDialog", () => {
-  it("filters community accounts by platform and shows bilingual empty state", async () => {
+  it("filters verified community accounts by Instagram, TikTok, and Discord", async () => {
     const user = userEvent.setup();
     render(CommunityHubHarness, { props: { locale: "es" } });
 
-    expect(screen.getByText("La Feedeneta Clips")).toBeTruthy();
+    expect(screen.getByText("Fedenismo 67")).toBeTruthy();
     expect(screen.getByText("FDN Clips")).toBeTruthy();
+    expect(screen.getByText("Futbol Club FDN")).toBeTruthy();
+    expect(screen.getByText("Feedenman")).toBeTruthy();
+    expect(screen.getByText("Fedenman TikTok")).toBeTruthy();
     expect(screen.getByText("Discord Oficial FDN")).toBeTruthy();
 
-    await user.click(screen.getByRole("tab", { name: "YouTube" }));
-    expect(screen.getByText("La Feedeneta Clips")).toBeTruthy();
+    await user.click(screen.getByRole("tab", { name: "Instagram" }));
+    expect(screen.getByText("Fedenismo 67")).toBeTruthy();
+    expect(screen.queryByText("Fedenman TikTok")).toBeNull();
     expect(screen.queryByText("Discord Oficial FDN")).toBeNull();
+
+    await user.click(screen.getByRole("tab", { name: "TikTok" }));
+    expect(screen.getByText("Fedenman TikTok")).toBeTruthy();
+    expect(screen.queryByText("Fedenismo 67")).toBeNull();
 
     await user.click(screen.getByRole("tab", { name: "Discord" }));
     expect(screen.getByText("Discord Oficial FDN")).toBeTruthy();
-    expect(screen.queryByText("La Feedeneta Clips")).toBeNull();
-
-    await user.click(screen.getByRole("tab", { name: "TikTok" }));
-    expect(
-      screen.getByText(/Todavia no hay cuentas cargadas en esta plataforma/i),
-    ).toBeTruthy();
+    expect(screen.queryByText("Fedenman TikTok")).toBeNull();
   });
 
   it("opens SubmitChannelDialog, copies template, and closes with Escape", async () => {
@@ -35,11 +38,11 @@ describe("CommunityHub and SubmitChannelDialog", () => {
     });
 
     const openBtn = screen.getByRole("button", {
-      name: /Submit your clip channel/i,
+      name: /Submit your page/i,
     });
     await user.click(openBtn);
 
-    expect(await screen.findByText("Submit a fan clip channel")).toBeTruthy();
+    expect(await screen.findByText("Submit a community account")).toBeTruthy();
 
     const copyBtn = screen.getByRole("button", { name: /Copy template/i });
     await user.click(copyBtn);
@@ -47,35 +50,21 @@ describe("CommunityHub and SubmitChannelDialog", () => {
     expect(onCopyTemplate.mock.calls[0][0]).toContain("Account name:");
 
     await user.keyboard("{Escape}");
-    expect(screen.queryByText("Submit a fan clip channel")).toBeNull();
+    expect(screen.queryByText("Submit a community account")).toBeNull();
   });
 
-  it("handles worst-case long fan account names and handles cleanly", () => {
+  it("renders empty state when no accounts match a platform", async () => {
+    const user = userEvent.setup();
     render(CommunityHubHarness, {
       props: {
         locale: "es",
-        accounts: [
-          {
-            id: "worst-case-fan",
-            name: "Archivo Historico Completo de Debates Futboleros y Recortes FDN",
-            handle: "@archivohistoricocompletodelafeedenetaoficial2026",
-            platform: "youtube",
-            platformLabel: "YouTube",
-            badge: "fan",
-            url: "https://www.youtube.com/@feeden",
-            description: {
-              es: "Recopilaciones extendidas con titulos muy largos para comprobar ajuste limpio en pantallas chicas.",
-              en: "Extended compilations with long descriptions to ensure graceful wrapping on narrow viewports.",
-            },
-          },
-        ],
+        accounts: [],
       },
     });
 
+    await user.click(screen.getByRole("tab", { name: "TikTok" }));
     expect(
-      screen.getByText(
-        "Archivo Historico Completo de Debates Futboleros y Recortes FDN",
-      ),
+      screen.getByText(/Todavia no hay cuentas en esta categoria/i),
     ).toBeTruthy();
   });
 });

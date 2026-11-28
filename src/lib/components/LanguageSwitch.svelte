@@ -25,25 +25,25 @@
   value={i18n.locale}
   onValueChange={handleLocaleChange}
   class={variant === "dark"
-    ? "border border-rule-strong bg-surface-900 p-0.5 font-mono text-xs uppercase"
-    : "border border-obsidian/25 bg-warm-stone p-0.5 font-mono text-xs uppercase"}
+    ? "rounded-[5px] border border-off-white/15 bg-surface-900 p-0.5 font-mono text-[12px]"
+    : "rounded-[5px] border border-obsidian/20 bg-warm-stone p-0.5 font-mono text-[12px]"}
 >
   <SegmentedControlIndicator
-    class={variant === "dark" ? "bg-fdn-lime" : "bg-obsidian"}
+    class={variant === "dark" ? "rounded-[3px] bg-fdn-lime" : "rounded-[3px] bg-obsidian"}
   />
   <SegmentedControlItem
     value="es"
     class={variant === "dark"
-      ? "relative z-10 inline-flex min-h-9 min-w-10 cursor-pointer items-center justify-center px-2.5 font-mono text-xs font-medium tracking-wider text-muted-ink transition-colors duration-150 data-checked:text-obsidian"
-      : "relative z-10 inline-flex min-h-9 min-w-10 cursor-pointer items-center justify-center px-2.5 font-mono text-xs font-medium tracking-wider text-obsidian/70 transition-colors duration-150 data-checked:text-fdn-lime"}
+      ? "relative z-10 inline-flex h-[26px] min-w-8 cursor-pointer items-center justify-center px-2 font-mono text-[12px] font-medium text-muted-ink transition-colors duration-150 data-checked:text-obsidian"
+      : "relative z-10 inline-flex h-[26px] min-w-8 cursor-pointer items-center justify-center px-2 font-mono text-[12px] font-medium text-obsidian/65 transition-colors duration-150 data-checked:text-fdn-lime"}
   >
     ES
   </SegmentedControlItem>
   <SegmentedControlItem
     value="en"
     class={variant === "dark"
-      ? "relative z-10 inline-flex min-h-9 min-w-10 cursor-pointer items-center justify-center px-2.5 font-mono text-xs font-medium tracking-wider text-muted-ink transition-colors duration-150 data-checked:text-obsidian"
-      : "relative z-10 inline-flex min-h-9 min-w-10 cursor-pointer items-center justify-center px-2.5 font-mono text-xs font-medium tracking-wider text-obsidian/70 transition-colors duration-150 data-checked:text-fdn-lime"}
+      ? "relative z-10 inline-flex h-[26px] min-w-8 cursor-pointer items-center justify-center px-2 font-mono text-[12px] font-medium text-muted-ink transition-colors duration-150 data-checked:text-obsidian"
+      : "relative z-10 inline-flex h-[26px] min-w-8 cursor-pointer items-center justify-center px-2 font-mono text-[12px] font-medium text-obsidian/65 transition-colors duration-150 data-checked:text-fdn-lime"}
   >
     EN
   </SegmentedControlItem>

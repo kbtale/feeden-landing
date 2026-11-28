@@ -16,9 +16,12 @@ export interface Translations {
     officialSocials: string;
     streamDeskTabs: string;
     communityFilterTabs: string;
+    splitModeSwitcher: string;
+    morphModeSwitcher: string;
     closeDialog: string;
     toastRegion: string;
     brandHome: string;
+    canvas3dLabel: string;
   };
   nav: {
     live: string;
@@ -33,74 +36,78 @@ export interface Translations {
     checking: string;
     viewersSingular: string;
     viewersPlural: string;
-    liveInKick: string;
-    channelSummary: string;
-    lastChecked: string;
     unknownTitle: string;
-    offlineSubtitle: string;
   };
   hero: {
-    eyebrowOffline: string;
-    eyebrowLive: string;
     headline: string;
     standfirst: string;
     primaryCta: string;
-    secondaryCta: string;
-    telemetryStatus: string;
-    telemetryChannel: string;
-    telemetryCategory: string;
-    telemetryViewers: string;
-    telemetryDefaultCategory: string;
-    telemetryOfflineValue: string;
-    telemetryLiveValue: string;
-    copyLink: string;
+    liveLinePrefix: string;
+    scrollHint: string;
+    logoAlt: string;
     copiedLink: string;
     copiedDescription: string;
-    logoAlt: string;
   };
-  stage: {
+  morphStage: {
     eyebrow: string;
     heading: string;
     subheading: string;
+    cardHeader: string;
+    modeStreamer: string;
+    modeFdn: string;
+    tabs: {
+      all: string;
+      gaming: string;
+      futbol: string;
+      chat: string;
+    };
+    totalLabelLive: string;
+    totalLabelOffline: string;
+    offlineValue: string;
+    lineItemsSuffix: string;
+    morphCaptionStreamer: string;
+    morphCaptionFdn: string;
+    copyLink: string;
+  };
+  splitSlab: {
+    eyebrow: string;
+    headingLive: string;
+    headingCommunity: string;
+    tabLive: string;
+    tabCommunity: string;
+    liveItems: readonly {
+      id: string;
+      title: string;
+      points: readonly string[];
+    }[];
+    communityItems: readonly {
+      id: string;
+      title: string;
+      points: readonly string[];
+    }[];
+    communityCardEyebrow: string;
+    communityCardTitle: string;
+    communityCardBody: string;
+    communityCardCta: string;
+    communityCardMeta: string;
+  };
+  stage: {
     playerTitle: string;
     skeletonLabel: string;
     fallbackTitle: string;
     fallbackBody: string;
     fallbackCta: string;
     loadPlayerCta: string;
-    tabs: {
-      status: string;
-      games: string;
-      info: string;
-    };
-    desk: {
-      nowPlaying: string;
-      categoryLabel: string;
-      viewersLabel: string;
-      channelLabel: string;
-      openKick: string;
-      copyChannel: string;
-      offlineHeadline: string;
-      offlineCopy: string;
-      gamesCaption: string;
-      languageLabel: string;
-      languageValue: string;
-      handleLabel: string;
-      discordLabel: string;
-      discordCta: string;
-      rulesHeading: string;
-      rules: readonly string[];
-    };
+    openKick: string;
+    copyChannel: string;
   };
   pillars: {
     eyebrow: string;
     heading: string;
     items: readonly {
       id: string;
-      index: string;
       title: string;
       description: string;
-      tag: string;
     }[];
   };
   community: {
@@ -113,15 +120,13 @@ export interface Translations {
     visitCta: string;
     filters: {
       all: string;
-      youtube: string;
+      instagram: string;
       tiktok: string;
-      social: string;
       discord: string;
     };
     emptyTitle: string;
     emptyBody: string;
     emptyCta: string;
-    countLabel: string;
     dialog: {
       title: string;
       description: string;
@@ -136,9 +141,13 @@ export interface Translations {
       close: string;
     };
   };
+  socialsSlab: {
+    eyebrow: string;
+    heading: string;
+    lead: string;
+    cta: string;
+  };
   closing: {
-    socialsEyebrow: string;
-    socialsHeading: string;
     heading: string;
     cta: string;
     emblemAlt: string;
@@ -146,7 +155,6 @@ export interface Translations {
   footer: {
     rights: string;
     builtBy: string;
-    switchLabel: string;
   };
 }
 
@@ -155,7 +163,7 @@ export const translations: Record<Locale, Translations> = {
     meta: {
       title: "Feeden (FDN) | Streams en vivo en Kick",
       description:
-        "Landing oficial de Feeden (FDN). Streams en vivo en Kick: gaming, reacciones, debates de futbol, Just Chatting y cuentas de clips de la comunidad.",
+        "Landing oficial de Feeden (FDN). Streams en vivo en Kick: gaming, reacciones, debates de futbol, Just Chatting y cuentas de la comunidad.",
     },
     a11y: {
       skipToContent: "Ir al contenido principal",
@@ -163,197 +171,244 @@ export const translations: Record<Locale, Translations> = {
       languageSwitcher: "Cambiar idioma",
       openMenu: "Abrir menu de navegacion",
       closeMenu: "Cerrar menu de navegacion",
-      mobileNavTitle: "Menu de Feeden",
-      mobileNavDescription: "Accesos rapidos al stream, comunidad y redes oficiales.",
+      mobileNavTitle: "Feeden",
+      mobileNavDescription: "Navegacion principal del sitio de Feeden.",
       officialSocials: "Redes oficiales de Feeden",
-      streamDeskTabs: "Panel de informacion del stream",
+      streamDeskTabs: "Categorias de la rotacion del stream",
       communityFilterTabs: "Filtrar cuentas de la comunidad por plataforma",
+      splitModeSwitcher: "Elegir vista de stream en vivo o comunidad",
+      morphModeSwitcher: "Alternar modo del modelo 3D entre Feeden y Yoda FDN",
       closeDialog: "Cerrar ventana",
       toastRegion: "Notificaciones",
       brandHome: "Feeden inicio",
+      canvas3dLabel: "Modelo 3D interactivo de Feeden transformandose en el emblema Yoda FDN",
     },
     nav: {
-      live: "En Vivo",
-      stream: "El Stream",
+      live: "En vivo",
+      stream: "El stream",
       community: "Comunidad",
       socials: "Redes",
       watchKick: "Ver en Kick",
     },
     status: {
-      live: "EN VIVO",
-      offline: "OFFLINE",
-      checking: "VERIFICANDO",
+      live: "En vivo",
+      offline: "Offline",
+      checking: "Verificando",
       viewersSingular: "viewer",
       viewersPlural: "viewers",
-      liveInKick: "EN VIVO EN KICK",
-      channelSummary: "KICK.COM/FEEDEN · STREAMER ARG",
-      lastChecked: "Actualizado",
       unknownTitle: "Transmision en Kick",
-      offlineSubtitle: "Cuando se prenda el vivo aparece aca mismo.",
     },
     hero: {
-      eyebrowOffline: "KICK.COM/FEEDEN · STREAMER ARG",
-      eyebrowLive: "EN VIVO EN KICK",
       headline: "Prendé el stream, sumate a la FDN.",
       standfirst:
-        "Gaming en vivo, reacciones, debates de futbol y Just Chatting sin filtro desde Argentina. Todo el vivo y las cuentas de la comunidad en un solo lugar.",
+        "Gaming en vivo, reacciones, debates de futbol y Just Chatting sin filtro desde Argentina. Todo el vivo en Kick y las cuentas de la comunidad en un solo lugar.",
       primaryCta: "Ver en Kick",
-      secondaryCta: "Ir al reproductor",
-      telemetryStatus: "ESTADO",
-      telemetryChannel: "CANAL",
-      telemetryCategory: "CATEGORIA",
-      telemetryViewers: "VIEWERS",
-      telemetryDefaultCategory: "Gaming / Reacciones / Futbol",
-      telemetryOfflineValue: "EN ESPERA",
-      telemetryLiveValue: "AL AIRE",
-      copyLink: "Copiar link del canal",
+      liveLinePrefix: "Ahora en Kick",
+      scrollHint: "Scrolleá para activar modo FDN",
+      logoAlt: "Emblema oficial de Feeden FDN",
       copiedLink: "Link copiado",
       copiedDescription: "kick.com/feeden listo para compartir.",
-      logoAlt: "Emblema oficial de Feeden FDN",
+    },
+    morphStage: {
+      eyebrow: "EN VIVO",
+      heading: "De Feeden a modo FDN.",
+      subheading:
+        "Cada vivo mezcla partidas competitivas, reacciones y charlas con toda la comunidad.",
+      cardHeader: "ROTACION",
+      modeStreamer: "Feeden",
+      modeFdn: "Modo FDN",
+      tabs: {
+        all: "Todo",
+        gaming: "Gaming",
+        futbol: "Futbol",
+        chat: "Chat",
+      },
+      totalLabelLive: "AUDIENCIA EN KICK",
+      totalLabelOffline: "CANAL OFICIAL",
+      offlineValue: "kick.com/feeden",
+      lineItemsSuffix: "bloques en rotacion",
+      morphCaptionStreamer: "Modo streamer · Scrollea o activa Modo FDN",
+      morphCaptionFdn: "Modo Yoda FDN activo · Rotacion completa",
+      copyLink: "Copiar link",
+    },
+    splitSlab: {
+      eyebrow: "EL STREAM",
+      headingLive: "Para ver el vivo sin vueltas.",
+      headingCommunity: "Para seguir en la FDN 24/7.",
+      tabLive: "En vivo en Kick",
+      tabCommunity: "Comunidad FDN",
+      liveItems: [
+        {
+          id: "player",
+          title: "Reproductor directo de Kick",
+          points: [
+            "Senal oficial embebida en 16:9 desde player.kick.com/feeden",
+            "Deteccion automatica de estado en vivo y viewers actuales",
+            "Acceso directo a kick.com/feeden si el navegador bloquea embeds",
+          ],
+        },
+        {
+          id: "rotation",
+          title: "Gaming, futbol y reacciones",
+          points: [
+            "Partidas de Fortnite, Fall Guys, Counter-Strike, Clash Royale y Roblox",
+            "Debates futboleros y reacciones a partidos con el chat",
+            "Just Chatting largo sin guion ni filtro",
+          ],
+        },
+        {
+          id: "alerts",
+          title: "Enterate ni bien prende",
+          points: [
+            "Avisos instantaneos en el Discord oficial de la FDN",
+            "Historias y previa diaria en @fedenrios",
+            "Resumenes y recortes apenas termina el vivo",
+          ],
+        },
+      ],
+      communityItems: [
+        {
+          id: "discord",
+          title: "Discord oficial de la FDN",
+          points: [
+            "Alertas automaticas cada vez que Feeden prende en Kick",
+            "Canales de futbol, gaming, memes y salas de voz",
+            "Organizacion de torneos y salas privadas con suscriptores",
+          ],
+        },
+        {
+          id: "fanpages",
+          title: "Fanpages y cuentas de clips",
+          points: [
+            "Recortes diarios en Instagram y TikTok hechos por la comunidad",
+            "Archivo de debates futboleros y momentos historicos",
+            "Espacio abierto para sumar nuevas cuentas fan verificadas",
+          ],
+        },
+        {
+          id: "vibe",
+          title: "Codigos del chat",
+          points: [
+            "Buena onda siempre, cero spam ni links sospechosos",
+            "Los debates de futbol se pican con respeto",
+            "Los mejores momentos van directo al directorio de clips",
+          ],
+        },
+      ],
+      communityCardEyebrow: "SERVIDOR OFICIAL",
+      communityCardTitle: "Sumate al Discord de la FDN.",
+      communityCardBody:
+        "Cuando se apaga el vivo la charla sigue en el servidor: avisos de stream, previas de partidos, salas de juegos y envio directo de clips.",
+      communityCardCta: "Entrar al Discord",
+      communityCardMeta: "discord.gg/jrHe634FU · Abierto a toda la comunidad",
     },
     stage: {
-      eyebrow: "EN VIVO",
-      heading: "El stream, directo acá.",
-      subheading: "Reproductor oficial de Kick y mesa de control del canal.",
       playerTitle: "Reproductor en vivo de Feeden en Kick",
-      skeletonLabel: "Preparando reproductor de Kick…",
-      fallbackTitle: "Reproductor de Kick no disponible en este navegador",
-      fallbackBody: "Si tu navegador bloquea embeds externos o el stream esta offline, podes abrir el canal directo en Kick.",
+      skeletonLabel: "Cargando reproductor de Kick…",
+      fallbackTitle: "Abrir el stream directo en Kick",
+      fallbackBody:
+        "Si tu navegador bloquea reproductores embebidos, abri el canal oficial directamente en Kick.",
       fallbackCta: "Abrir kick.com/feeden",
-      loadPlayerCta: "Cargar reproductor",
-      tabs: {
-        status: "Estado",
-        games: "Juegos & Vibe",
-        info: "Chat & Info",
-      },
-      desk: {
-        nowPlaying: "TITULO DEL VIVO",
-        categoryLabel: "CATEGORIA",
-        viewersLabel: "AUDIENCIA ACTUAL",
-        channelLabel: "SEÑAL DIRECTA",
-        openKick: "Abrir en Kick",
-        copyChannel: "Copiar enlace",
-        offlineHeadline: "Stream offline en este momento",
-        offlineCopy:
-          "Seguí el canal en Kick o sumate al Discord de la FDN para enterarte ni bien prenda.",
-        gamesCaption: "ROTACION HABITUAL DEL CANAL",
-        languageLabel: "IDIOMA",
-        languageValue: "Español (Argentina)",
-        handleLabel: "CANAL OFICIAL",
-        discordLabel: "COMUNIDAD",
-        discordCta: "Entrar al Discord FDN",
-        rulesHeading: "CODIGOS DEL CHAT",
-        rules: [
-          "Buena onda en el chat, cero spam ni links raros.",
-          "Los debates de futbol se pican con respeto.",
-          "Clips y mejores momentos van directo a la comunidad.",
-        ],
-      },
+      loadPlayerCta: "Reintentar",
+      openKick: "Abrir en Kick",
+      copyChannel: "Copiar enlace",
     },
     pillars: {
-      eyebrow: "EL STREAM",
-      heading: "Lo que pasa cuando se prende.",
+      eyebrow: "QUE PASA EN EL VIVO",
+      heading: "Todo en una misma transmision.",
       items: [
         {
           id: "gaming",
-          index: "01",
           title: "Gaming en vivo",
           description:
-            "Partidas competitivas y caoticas en Fortnite, Fall Guys, Counter-Strike, Clash Royale y Roblox con el chat encima.",
-          tag: "COMPETITIVO & CAOS",
+            "Partidas competitivas y caoticas en Fortnite, Fall Guys, Counter-Strike, Clash Royale y Roblox jugando con el chat.",
         },
         {
           id: "reactions",
-          index: "02",
           title: "Reacciones y futbol",
           description:
-            "Partidos, polemicas, videos virales y debates futboleros en vivo con toda la comunidad opinando.",
-          tag: "FUTBOL & VIRALES",
+            "Partidos, polemicas, videos virales y debates futboleros en directo con toda la comunidad opinando.",
         },
         {
           id: "just-chatting",
-          index: "03",
           title: "Just Chatting y humor",
           description:
-            "Charlas largas, anecdotas y el ida y vuelta diario con la gente que bancó el stream desde el principio.",
-          tag: "CONVERSACION",
+            "Charlas largas, anecdotas y el ida y vuelta diario con la gente que banca el stream desde el principio.",
         },
         {
           id: "events",
-          index: "04",
           title: "Eventos y torneos FDN",
           description:
             "Showmatches, cruces especiales, desafios contra otros creadores y noches tematicas armadas para la comunidad.",
-          tag: "EVENTOS ESPECIALES",
         },
         {
           id: "community-clips",
-          index: "05",
           title: "Comunidad 24/7",
           description:
-            "Discord activo todo el dia y canales de clips creados por fans que suben los mejores recortes de cada transmision.",
-          tag: "CLIPS & ARCHIVO",
+            "Discord activo todo el dia y fanpages creadas por la gente que archivan los mejores recortes de cada vivo.",
         },
       ],
     },
     community: {
       eyebrow: "COMUNIDAD FDN",
-      heading: "Cuentas de clips y comunidad.",
+      heading: "Fanpages y cuentas de clips.",
       description:
-        "La FDN no termina cuando se apaga el vivo. Aca estan el Discord oficial y las cuentas de clips creadas por fans que archivan los mejores momentos en YouTube, TikTok y redes.",
-      submitCta: "Sumar tu cuenta de clips",
-      badgeOfficial: "OFICIAL",
-      badgeFan: "FAN CLIPS",
+        "El ecosistema que arma la comunidad alrededor de cada stream en Instagram, TikTok y Discord.",
+      submitCta: "Sumar tu cuenta",
+      badgeOfficial: "Oficial",
+      badgeFan: "Fanpage",
       visitCta: "Visitar",
       filters: {
         all: "Todos",
-        youtube: "YouTube",
+        instagram: "Instagram",
         tiktok: "TikTok",
-        social: "Instagram / X",
         discord: "Discord",
       },
-      emptyTitle: "Todavia no hay cuentas cargadas en esta plataforma",
-      emptyBody: "Tenes una cuenta fan de clips o recortes de Feeden aca? Enviala y la sumamos al directorio.",
+      emptyTitle: "Todavia no hay cuentas en esta categoria",
+      emptyBody: "Manejas una cuenta fan de Feeden aca? Mandanos el link y la sumamos.",
       emptyCta: "Enviar mi cuenta",
-      countLabel: "cuentas activas",
       dialog: {
-        title: "Sumar cuenta fan de clips",
+        title: "Sumar cuenta de la comunidad",
         description:
-          "Si manejas un canal de clips o archivo de la FDN, copia esta plantilla y mandanos los datos por Discord o X para agregarte al directorio.",
+          "Si manejas una fanpage o canal de clips de Feeden, copia esta plantilla y enviala por Discord o X para sumarla al directorio.",
         stepsTitle: "COMO PARTICIPAR",
         steps: [
           "Copia la plantilla con el nombre de tu cuenta, plataforma y link directo.",
-          "Enviala en el canal de comunidad de Discord o por mensaje en X.",
-          "Una vez verificada, aparece en el hub de comunidad FDN.",
+          "Enviala en el Discord oficial de la FDN o por mensaje a @Feeden_ en X.",
+          "Una vez revisada, aparece publicada en esta seccion.",
         ],
         templateLabel: "PLANTILLA DE ENVIO",
         templateBody:
-          "Nombre de la cuenta:\nPlataforma (YouTube / TikTok / Instagram / X):\nUsuario (@handle):\nLink del canal:\nDescripcion corta:",
+          "Nombre de la cuenta:\nPlataforma (Instagram / TikTok / YouTube / X):\nUsuario (@handle):\nLink del perfil:\nDescripcion corta:",
         copyTemplate: "Copiar plantilla",
         copiedTemplate: "Plantilla copiada",
         openDiscord: "Abrir Discord",
-        openX: "Enviar por X",
+        openX: "Ir a @Feeden_",
         close: "Cerrar",
       },
     },
+    socialsSlab: {
+      eyebrow: "REDES OFICIALES",
+      heading: "Donde encontrar a Feeden.",
+      lead:
+        "Todas las cuentas verificadas de Feeden en un solo lugar para no perderte ningun vivo, video o aviso.",
+      cta: "Entrar al Discord",
+    },
     closing: {
-      socialsEyebrow: "REDES OFICIALES",
-      socialsHeading: "Seguí a Feeden en todas las plataformas.",
       heading: "Nos vemos en el próximo vivo.",
       cta: "Ver en Kick",
-      emblemAlt: "Marca geometrica FDN",
+      emblemAlt: "Emblema geometrico FDN",
     },
     footer: {
-      rights: "Feeden (FDN) · Comunidad oficial de streams en Kick",
+      rights: "Feeden (FDN). Comunidad oficial de streams en Kick.",
       builtBy: "Hecho por kbtale",
-      switchLabel: "Idioma",
     },
   },
   en: {
     meta: {
       title: "Feeden (FDN) | Live Streams on Kick",
       description:
-        "Official landing page for Feeden (FDN). Live Kick streams covering gaming, reactions, football debates, Just Chatting, and fan clip channels.",
+        "Official landing page for Feeden (FDN). Live Kick streams covering gaming, reactions, football debates, Just Chatting, and community fanpages.",
     },
     a11y: {
       skipToContent: "Skip to main content",
@@ -361,190 +416,237 @@ export const translations: Record<Locale, Translations> = {
       languageSwitcher: "Switch language",
       openMenu: "Open navigation menu",
       closeMenu: "Close navigation menu",
-      mobileNavTitle: "Feeden Menu",
-      mobileNavDescription: "Quick links to the live stream, community hub, and official socials.",
+      mobileNavTitle: "Feeden",
+      mobileNavDescription: "Primary navigation for Feeden.",
       officialSocials: "Feeden official social links",
-      streamDeskTabs: "Stream desk information tabs",
+      streamDeskTabs: "Stream rotation categories",
       communityFilterTabs: "Filter community accounts by platform",
+      splitModeSwitcher: "Switch between live stream player and community view",
+      morphModeSwitcher: "Toggle 3D model between Feeden streamer and FDN Yoda mode",
       closeDialog: "Close dialog",
       toastRegion: "Notifications",
       brandHome: "Feeden home",
+      canvas3dLabel: "Interactive 3D Feeden sculpture morphing into the FDN Yoda mascot",
     },
     nav: {
       live: "Live",
-      stream: "The Stream",
+      stream: "The stream",
       community: "Community",
       socials: "Socials",
       watchKick: "Watch on Kick",
     },
     status: {
-      live: "LIVE",
-      offline: "OFFLINE",
-      checking: "CHECKING",
+      live: "Live",
+      offline: "Offline",
+      checking: "Checking",
       viewersSingular: "viewer",
       viewersPlural: "viewers",
-      liveInKick: "LIVE ON KICK",
-      channelSummary: "KICK.COM/FEEDEN · ARG STREAMER",
-      lastChecked: "Updated",
       unknownTitle: "Kick Broadcast",
-      offlineSubtitle: "The stream appears right here the moment Feeden goes live.",
     },
     hero: {
-      eyebrowOffline: "KICK.COM/FEEDEN · ARG STREAMER",
-      eyebrowLive: "LIVE ON KICK",
       headline: "Tune in live, join the FDN.",
       standfirst:
-        "Live gaming, unfiltered reactions, football debates, and Just Chatting from Argentina. The live broadcast and every community clip channel in one place.",
+        "Live gaming, unfiltered reactions, football debates, and Just Chatting from Argentina. The live Kick stream and every community page in one place.",
       primaryCta: "Watch on Kick",
-      secondaryCta: "Jump to Player",
-      telemetryStatus: "STATUS",
-      telemetryChannel: "CHANNEL",
-      telemetryCategory: "CATEGORY",
-      telemetryViewers: "VIEWERS",
-      telemetryDefaultCategory: "Gaming / Reactions / Football",
-      telemetryOfflineValue: "STANDBY",
-      telemetryLiveValue: "ON AIR",
-      copyLink: "Copy channel link",
+      liveLinePrefix: "Live now on Kick",
+      scrollHint: "Scroll to morph into FDN mode",
+      logoAlt: "Feeden FDN official emblem",
       copiedLink: "Link copied",
       copiedDescription: "kick.com/feeden is ready to share.",
-      logoAlt: "Feeden FDN official emblem",
+    },
+    morphStage: {
+      eyebrow: "ON AIR",
+      heading: "From Feeden to FDN mode.",
+      subheading:
+        "Every stream mixes competitive lobbies, football debates, and live banter with chat.",
+      cardHeader: "ROTATION",
+      modeStreamer: "Feeden",
+      modeFdn: "FDN Mode",
+      tabs: {
+        all: "All",
+        gaming: "Gaming",
+        futbol: "Football",
+        chat: "Chat",
+      },
+      totalLabelLive: "LIVE ON KICK",
+      totalLabelOffline: "OFFICIAL CHANNEL",
+      offlineValue: "kick.com/feeden",
+      lineItemsSuffix: "segments in rotation",
+      morphCaptionStreamer: "Streamer mode · Scroll or switch to FDN Mode",
+      morphCaptionFdn: "FDN Yoda mode active · Full rotation",
+      copyLink: "Copy link",
+    },
+    splitSlab: {
+      eyebrow: "THE STREAM",
+      headingLive: "Built to watch live right away.",
+      headingCommunity: "Built for the FDN 24/7.",
+      tabLive: "Live on Kick",
+      tabCommunity: "FDN Community",
+      liveItems: [
+        {
+          id: "player",
+          title: "Direct Kick broadcast player",
+          points: [
+            "Official 16:9 embed powered by player.kick.com/feeden",
+            "Live status and viewer count detection with silent fallback",
+            "One-click direct link to kick.com/feeden whenever needed",
+          ],
+        },
+        {
+          id: "rotation",
+          title: "Gaming, football, and reactions",
+          points: [
+            "Fortnite, Fall Guys, Counter-Strike, Clash Royale, and Roblox lobbies",
+            "Live football debates and match reactions with chat",
+            "Long unfiltered Just Chatting hangouts",
+          ],
+        },
+        {
+          id: "alerts",
+          title: "Never miss a broadcast",
+          points: [
+            "Instant live pings inside the official FDN Discord server",
+            "Pre-stream stories and daily updates on @fedenrios",
+            "Edited recaps and clips right after the stream ends",
+          ],
+        },
+      ],
+      communityItems: [
+        {
+          id: "discord",
+          title: "Official FDN Discord",
+          points: [
+            "Automatic live notifications the moment Feeden goes on air",
+            "Dedicated football, gaming, meme, and voice channels",
+            "Community tournaments and subscriber custom lobbies",
+          ],
+        },
+        {
+          id: "fanpages",
+          title: "Fanpages & clip archives",
+          points: [
+            "Daily Instagram and TikTok cuts edited by the community",
+            "Archive of football debates and classic FDN moments",
+            "Open directory for verified community clip pages",
+          ],
+        },
+        {
+          id: "vibe",
+          title: "Chat basics",
+          points: [
+            "Good vibes only, zero spam or shady links",
+            "Football debates can get loud, always keep it respectful",
+            "Top moments head straight into the fan clip pages",
+          ],
+        },
+      ],
+      communityCardEyebrow: "OFFICIAL SERVER",
+      communityCardTitle: "Join the FDN Discord.",
+      communityCardBody:
+        "When the stream wraps, chat keeps going inside the server: live alerts, match watchalongs, custom lobbies, and clip submissions.",
+      communityCardCta: "Join Discord",
+      communityCardMeta: "discord.gg/jrHe634FU · Open to the whole community",
     },
     stage: {
-      eyebrow: "ON AIR",
-      heading: "The stream, right here.",
-      subheading: "Official Kick player paired with the live stream desk.",
       playerTitle: "Feeden live stream player on Kick",
-      skeletonLabel: "Preparing Kick player…",
-      fallbackTitle: "Kick embed unavailable in this browser",
-      fallbackBody: "If your browser blocks embedded players or the stream is offline, open the channel directly on Kick.",
+      skeletonLabel: "Loading Kick player…",
+      fallbackTitle: "Watch directly on Kick",
+      fallbackBody:
+        "If your browser blocks embedded players, open the official channel straight on Kick.",
       fallbackCta: "Open kick.com/feeden",
-      loadPlayerCta: "Load player",
-      tabs: {
-        status: "Status",
-        games: "Games & Vibe",
-        info: "Chat & Info",
-      },
-      desk: {
-        nowPlaying: "STREAM TITLE",
-        categoryLabel: "CATEGORY",
-        viewersLabel: "CURRENT AUDIENCE",
-        channelLabel: "DIRECT FEED",
-        openKick: "Open on Kick",
-        copyChannel: "Copy link",
-        offlineHeadline: "Stream is offline right now",
-        offlineCopy:
-          "Follow the channel on Kick or join the official FDN Discord to get pinged as soon as Feeden goes live.",
-        gamesCaption: "REGULAR CHANNEL ROTATION",
-        languageLabel: "LANGUAGE",
-        languageValue: "Spanish (Argentina)",
-        handleLabel: "OFFICIAL CHANNEL",
-        discordLabel: "COMMUNITY",
-        discordCta: "Join FDN Discord",
-        rulesHeading: "CHAT BASICS",
-        rules: [
-          "Keep chat welcoming, no spam or shady links.",
-          "Football debates can get loud, always keep it respectful.",
-          "Best moments and clips go straight into the community hub.",
-        ],
-      },
+      loadPlayerCta: "Retry",
+      openKick: "Open on Kick",
+      copyChannel: "Copy link",
     },
     pillars: {
-      eyebrow: "THE STREAM",
-      heading: "What happens when the stream goes live.",
+      eyebrow: "WHAT HAPPENS LIVE",
+      heading: "Everything inside one broadcast.",
       items: [
         {
           id: "gaming",
-          index: "01",
           title: "Live gaming",
           description:
             "Competitive and chaotic sessions across Fortnite, Fall Guys, Counter-Strike, Clash Royale, and Roblox with chat driving the pace.",
-          tag: "COMPETITIVE & CHAOS",
         },
         {
           id: "reactions",
-          index: "02",
           title: "Reactions & football",
           description:
             "Matches, hot takes, viral clips, and live football debates with the whole community weighing in.",
-          tag: "FOOTBALL & VIRAL",
         },
         {
           id: "just-chatting",
-          index: "03",
           title: "Just Chatting & banter",
           description:
             "Unscripted hangouts, stories, and daily back-and-forth with the regulars who built the FDN community.",
-          tag: "HANGOUTS",
         },
         {
           id: "events",
-          index: "04",
           title: "FDN events & showmatches",
           description:
             "Special matchups, creator showmatches, community tournaments, and themed broadcast nights.",
-          tag: "SPECIAL NIGHTS",
         },
         {
           id: "community-clips",
-          index: "05",
           title: "24/7 community clips",
           description:
-            "An always-on Discord plus fan-run clip and archive channels capturing the best moments from every broadcast.",
-          tag: "CLIPS & ARCHIVE",
+            "An always-on Discord plus fan-run clip pages archiving the best moments from every stream.",
         },
       ],
     },
     community: {
       eyebrow: "FDN COMMUNITY",
-      heading: "Fan clip channels & community.",
+      heading: "Fanpages & clip accounts.",
       description:
-        "The FDN community keeps rolling after the stream ends. Browse the official Discord and fan-created clip channels archiving highlights across YouTube, TikTok, and socials.",
-      submitCta: "Submit your clip channel",
-      badgeOfficial: "OFFICIAL",
-      badgeFan: "FAN CLIPS",
+        "The community ecosystem built around every stream across Instagram, TikTok, and Discord.",
+      submitCta: "Submit your page",
+      badgeOfficial: "Official",
+      badgeFan: "Fanpage",
       visitCta: "Visit",
       filters: {
         all: "All",
-        youtube: "YouTube",
+        instagram: "Instagram",
         tiktok: "TikTok",
-        social: "Instagram / X",
         discord: "Discord",
       },
-      emptyTitle: "No fan accounts listed on this platform yet",
-      emptyBody: "Run a Feeden clip or archive account here? Send your channel details and we will add it to the directory.",
-      emptyCta: "Submit my channel",
-      countLabel: "active channels",
+      emptyTitle: "No accounts listed in this category yet",
+      emptyBody: "Run a Feeden clip or fan account here? Send your link and we will add it.",
+      emptyCta: "Submit my page",
       dialog: {
-        title: "Submit a fan clip channel",
+        title: "Submit a community account",
         description:
-          "If you run an FDN clip or archive page, copy this template and send your link via Discord or X to get listed in the community hub.",
+          "If you run an FDN fanpage or clip channel, copy this template and share it via Discord or X to get listed in the directory.",
         stepsTitle: "HOW TO GET LISTED",
         steps: [
-          "Copy the template with your channel name, platform, and direct link.",
-          "Share it in the FDN Discord community channel or via X DM.",
-          "Once reviewed, your channel is added to the FDN Community Hub.",
+          "Copy the template with your account name, platform, and profile link.",
+          "Share it inside the official FDN Discord or message @Feeden_ on X.",
+          "Once reviewed, your account is published in this section.",
         ],
         templateLabel: "SUBMISSION TEMPLATE",
         templateBody:
-          "Account name:\nPlatform (YouTube / TikTok / Instagram / X):\nHandle (@user):\nChannel link:\nShort description:",
+          "Account name:\nPlatform (Instagram / TikTok / YouTube / X):\nHandle (@user):\nProfile link:\nShort description:",
         copyTemplate: "Copy template",
         copiedTemplate: "Template copied",
         openDiscord: "Open Discord",
-        openX: "Message on X",
+        openX: "Message @Feeden_",
         close: "Close",
       },
     },
+    socialsSlab: {
+      eyebrow: "OFFICIAL CHANNELS",
+      heading: "Where to find Feeden.",
+      lead:
+        "Every verified Feeden profile in one place so you never miss a stream, upload, or pre-show ping.",
+      cta: "Join Discord",
+    },
     closing: {
-      socialsEyebrow: "OFFICIAL CHANNELS",
-      socialsHeading: "Follow Feeden across every platform.",
       heading: "See you in the next stream.",
       cta: "Watch on Kick",
       emblemAlt: "FDN geometric brand mark",
     },
     footer: {
-      rights: "Feeden (FDN) · Official Kick streamer community",
+      rights: "Feeden (FDN). Official Kick streamer community.",
       builtBy: "Built by kbtale",
-      switchLabel: "Language",
     },
   },
 };
